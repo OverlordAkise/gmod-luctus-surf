@@ -17,9 +17,18 @@ function lucidDrawRect(x, y, w, h, col)
     surface.DrawRect(x, y, w, h)
 end
 
+
+
+function LEnableClicker(ply,key)
+    if not ply == LocalPlayer() then return end
+    if key ~= IN_USE then return end
+    gui.EnableScreenClicker(true)
+end
+
 local sboard = nil
 function GM:ScoreboardShow()
     if IsValid(sboard) then return end
+    hook.Add("KeyPress", "luctus_surf_scoreboardclick", LEnableClicker)
     sboard = vgui.Create("DFrame")
     sboard:SetSize(800, 600)
     sboard:SetTitle("")
@@ -94,7 +103,11 @@ function GM:ScoreboardShow()
             draw.DrawText(v:Nick(), "sboardScoreFontSmall", 40, 4, COLOR_WHITE)
             draw.DrawText(string.NiceTime(v:GetNWInt("playtime",0)), "sboardScoreFontSmall", 240, 4, COLOR_WHITE,TEXT_ALIGN_LEFT)
             --draw.DrawText(v:GetNWInt("level",1), "sboardScoreFontSmall", 370, 3, COLOR_WHITE)
-            draw.DrawText(PrettifyTime(v:GetNWFloat("starttime",0) ~= 0 and CurTime() - v:GetNWFloat("starttime",0) or 0), "sboardScoreFontSmall", 440, 4, COLOR_WHITE)
+            local ctime = PrettifyTime(v:GetNWFloat("starttime",0) ~= 0 and CurTime() - v:GetNWFloat("starttime",0) or 0)
+            if v:GetNWBool("spectating",false) then
+                ctime = "SPECTATING"
+            end
+            draw.DrawText(ctime, "sboardScoreFontSmall", 440, 4, COLOR_WHITE)
             draw.DrawText(PrettifyTime(v:GetNWFloat("record",0)), "sboardScoreFontSmall", 560, 4, COLOR_WHITE)
             draw.DrawText(v:Ping(), "sboardScoreFontSmall", 690, 4, COLOR_WHITE)
         end
@@ -110,7 +123,7 @@ function GM:ScoreboardShow()
         mute:SetImage(v:IsMuted() and "icon16/sound_mute.png" or "icon16/sound.png")
 
         mute.DoClick = function()
-            if !v:IsMuted() then v:SetMuted( true ) else v:SetMuted( false ) end
+            if not v:IsMuted() then v:SetMuted( true ) else v:SetMuted( false ) end
             mute:SetImage(v:IsMuted() and "icon16/sound_mute.png" or "icon16/sound.png")
         end
 
@@ -118,5 +131,11 @@ function GM:ScoreboardShow()
     end
 end
 
-function GM:ScoreboardHide() if IsValid(sboard) then sboard:Close() end end
+function GM:ScoreboardHide()
+    if IsValid(sboard) then
+        hook.Remove("KeyPress", "luctus_surf_scoreboardclick")
+        gui.EnableScreenClicker(false)
+        sboard:Close()
+    end
+end
 function GM:HUDDrawScoreBoard() end
