@@ -1,6 +1,6 @@
 util.AddNetworkString("spec_keys")
 
-local spectatorKeys = spectatorKeys or {}
+spectatorKeys = spectatorKeys or {}
 
 hook.Add("PlayerInitialSpawn","surf_keys_init",function(ply)
     if not spectatorKeys[ply] then spectatorKeys[ply] = 0 end

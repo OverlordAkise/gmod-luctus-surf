@@ -1,7 +1,4 @@
-
-local ViewSpec = CreateClientConVar( "ls_showspec", "1", true, false )
-
-local fo, cl, ct = string.format, math.Clamp, CurTime
+local fo, cl = string.format, math.Clamp
 
 
 local Xo = 20
@@ -37,12 +34,4 @@ function GM:HUDPaintBackground()
     surface.DrawRect( Xo + 5, scrh - Yo + 65, cp * 220, 25 )
 
     draw.SimpleText( fo( "%.0f u/s", nSpeed ), "HudHintTextLarge", Xo + 115, scrh - Yo + 77, colwhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-
-    --if lpc:GetObserverTarget() then
-    --draw.SimpleText( "SPECTATING "..lpc:GetObserverTarget():Nick(), "Default", ScrW(), scrh - 100, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-    --end
-
-    if ViewSpec:GetBool() then
-    --TODO: Add a list of spectators to the right
-    end
 end
