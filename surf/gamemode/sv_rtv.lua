@@ -30,13 +30,13 @@ function rtvStart()
         if #allMaps > 0 then
             local rindex = math.random(1,#allMaps)
             rtv_selectedMaps[allMaps[rindex]] = 0
-            rtv_ent:SetNWInt(allMaps[rindex],0)
+            SetGlobal2Int(allMaps[rindex],0)
             table.remove(allMaps,rindex)
         end
     end
     --add current one too
     rtv_selectedMaps[game.GetMap()] = 0
-    rtv_ent:SetNWInt(game.GetMap(),0)
+    SetGlobal2Int(game.GetMap(),0)
 
     print("[surfRTV] Selected maps for the next map:")
     PrintTable(rtv_selectedMaps)
@@ -63,10 +63,10 @@ net.Receive("surf_rtvmaps", function(len,ply)
         rtv_selectedMaps[map] = rtv_selectedMaps[map] + 1
         if ply.rtvMap then
             rtv_selectedMaps[ply.rtvMap] = rtv_selectedMaps[ply.rtvMap] - 1
-            rtv_ent:SetNWInt(ply.rtvMap,rtv_selectedMaps[ply.rtvMap])
+            SetGlobal2Int(ply.rtvMap,rtv_selectedMaps[ply.rtvMap])
         end
         ply.rtvMap = map
-        rtv_ent:SetNWInt(map,rtv_selectedMaps[map])
+        SetGlobal2Int(map,rtv_selectedMaps[map])
         net.Start("surf_rtvsound")
             net.WriteString("buttons/button14.wav")
         net.Send(ply)
@@ -83,8 +83,8 @@ function rtvEnd()
     local nextMultiple = {}
     for k,v in pairs(rtv_selectedMaps) do
         --get maps that have votes
-        if rtv_ent:GetNWInt(k,0) > 0 then
-            nextMaps[k] = rtv_ent:GetNWInt(k,0)
+        if GetGlobal2Int(k,0) > 0 then
+            nextMaps[k] = GetGlobal2Int(k,0)
             highestMap = k --for no-nil later
         end
     end
@@ -135,7 +135,7 @@ function rtvEnd()
         SetGlobal2Int("rtv_autotime",CurTime()+1800)
         --CleanUp
         for k,v in pairs(rtv_selectedMaps) do
-            rtv_ent:SetNWInt(k,0)
+            SetGlobal2Int(k,0)
         end
         rtv_selectedMaps = {}
         net.Start("surf_rtvmaps")

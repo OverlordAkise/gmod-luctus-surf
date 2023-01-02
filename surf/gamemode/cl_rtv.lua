@@ -24,9 +24,9 @@ function drawRTV()
     local rtime = math.Clamp(math.Round(GetGlobal2Int("rtv_autotime",0) - CurTime()),0,30)
     draw.SimpleTextOutlined("RTV Mapvote ("..rtime.."s)", "DermaDefault", 10, (ScrH()/2-50), Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 0.3, Color(0, 0, 0))
     for k,v in pairs(rtv_maps) do
-        local text = "["..rtv_ent:GetNWInt(v,0).."] "..k..". "..v
+        local text = "["..GetGlobal2Int(v,0).."] "..k..". "..v
         if v == game.GetMap() then
-            text = "["..rtv_ent:GetNWInt(v,0).."] "..k..". ".."Extend current map"
+            text = "["..GetGlobal2Int(v,0).."] "..k..". ".."Extend current map"
         end
         draw.SimpleTextOutlined(text, "DermaDefault", 10, (ScrH()/2-50)+15*(k), Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 0.3, Color(0, 0, 0))
     end
