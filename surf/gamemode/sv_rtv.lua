@@ -12,7 +12,7 @@ function rtvStart()
     if rtv_in_progress then return end
     rtv_in_progress = true
     timer.Remove("surf_rtv_auto_timer")
-    rtv_ent:SetNWInt("rtv_autotime",CurTime()+30)
+    SetGlobal2Int("rtv_autotime",CurTime()+30)
     local allMaps = {}
     local res = sql.Query( "SELECT map, tier, type FROM surf_map" )
     if res == false then
@@ -132,7 +132,7 @@ function rtvEnd()
     else
         PrintMessage(HUD_PRINTTALK, "[surf] The map will be extended by 30min!")
         timer.Create("surf_rtv_auto_timer",1800,1,function() rtvStart() end)
-        rtv_ent:SetNWInt("rtv_autotime",CurTime()+1800)
+        SetGlobal2Int("rtv_autotime",CurTime()+1800)
         --CleanUp
         for k,v in pairs(rtv_selectedMaps) do
             rtv_ent:SetNWInt(k,0)
@@ -209,5 +209,5 @@ end)
 hook.Add("InitPostEntity", "surf_rtv_tilltime", function()
     timer.Create("surf_rtv_auto_timer",1800,1,function() rtvStart() end)
     rtv_ent = ents.GetAll()[1]
-    rtv_ent:SetNWInt("rtv_autotime",CurTime()+1800)
+    SetGlobal2Int("rtv_autotime",CurTime()+1800)
 end)

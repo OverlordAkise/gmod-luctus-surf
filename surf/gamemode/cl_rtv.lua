@@ -15,13 +15,13 @@ net.Receive("surf_rtvmaps",function()
         local map = net.ReadString()
         table.insert(rtv_maps,map)
     end
-    print("[surfRTV] Maps received!")
+    print("[surf][rtv] Map vote started, maps received!")
     PrintTable(rtv_maps)
     hook.Add("HUDPaint","surf_rtv_votemaps",drawRTV)
 end)
 
 function drawRTV()
-    local rtime = math.Clamp(math.Round(rtv_ent:GetNWInt("rtv_autotime",0) - CurTime()),0,30)
+    local rtime = math.Clamp(math.Round(GetGlobal2Int("rtv_autotime",0) - CurTime()),0,30)
     draw.SimpleTextOutlined("RTV Mapvote ("..rtime.."s)", "DermaDefault", 10, (ScrH()/2-50), Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, 0.3, Color(0, 0, 0))
     for k,v in pairs(rtv_maps) do
         local text = "["..rtv_ent:GetNWInt(v,0).."] "..k..". "..v
@@ -33,6 +33,7 @@ function drawRTV()
 end
 
 function ConvertRTVTime(ns)
+    if ns == -1 then return "UNKNOWN" end
     if ns < 0 then return "NOW" end
     if ns > 3600 then
         return string.format( "%d:%.2d:%.2d", math.floor( ns / 3600 ), math.floor( ns / 60 % 60 ), math.floor( ns % 60 ))
@@ -40,15 +41,6 @@ function ConvertRTVTime(ns)
         return string.format( "%.2d:%.2d", math.floor( ns / 60 % 60 ), math.floor( ns % 60 ))
     end
 end
-
-
-hook.Add("HUDPaint","surf_rtv_till_time", function()
-    if not IsValid(rtv_ent) then return end
-    local text = "Time till mapchange:   "..ConvertRTVTime(rtv_ent:GetNWInt("rtv_autotime",0)-CurTime())
-    surface.SetDrawColor( Color(35, 35, 35) )
-    surface.DrawRect( 20, ScrH() - 150, 230, 30 )
-    draw.SimpleText(text, "HudHintTextLarge", 20+12, ScrH() - 155 + 20, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-end)
 
 hook.Add("PlayerBindPress", "surf_rtv_voting", function(ply, bind, pressed)
     if (string.find( bind, "slot")) then
@@ -67,5 +59,5 @@ end)
 
 
 net.Receive("surf_rtvsound",function()
-    LocalPlayer():EmitSound(net.ReadString())
+    surface.PlaySound(net.ReadString())
 end)
