@@ -39,7 +39,7 @@ function GM:HUDPaintBackground()
     draw.SimpleText( fo( "%.0f u/s", nSpeed ), "HudHintTextLarge", Xo + 115, scrh - Yo + 77, colwhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 
     --if lpc:GetObserverTarget() then
-    --	draw.SimpleText( "SPECTATING "..lpc:GetObserverTarget():Nick(), "Default", ScrW(), scrh - 100, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    --draw.SimpleText( "SPECTATING "..lpc:GetObserverTarget():Nick(), "Default", ScrW(), scrh - 100, Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
     --end
 
     if ViewSpec:GetBool() then

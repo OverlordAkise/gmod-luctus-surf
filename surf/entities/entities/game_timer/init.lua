@@ -35,8 +35,8 @@ function ENT:Initialize()
     self:SetZoneType( self.zonetype )
 end
 
-function ENT:StartTouch( ent )  
-    if IsValid(ent) and ent:IsPlayer() and ent:Team() != TEAM_SPECTATOR then
+function ENT:StartTouch(ent)
+    if IsValid(ent) and ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
         local zone = self:GetZoneType()
         if zone == Zone.MStart then
             ent:ResetTimer()
@@ -50,8 +50,8 @@ function ENT:StartTouch( ent )
     end
 end
 
-function ENT:EndTouch( ent )
-    if IsValid(ent) and ent:IsPlayer() and ent:Team() != TEAM_SPECTATOR then
+function ENT:EndTouch(ent)
+    if IsValid(ent) and ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
         local zone = self:GetZoneType()
         if zone == Zone.MStart then
             ent:StartTimer()

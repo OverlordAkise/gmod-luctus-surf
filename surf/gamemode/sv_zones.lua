@@ -14,15 +14,15 @@ Zones.Cache = {}
 Zones.Entities = {}
 
 function Zones:Setup()
-    local zones = sql.Query( "SELECT type, posone, postwo FROM surf_zones WHERE map = "..sql.SQLStr(game.GetMap())) 
-    if zones == false then 
+    local zones = sql.Query( "SELECT type, posone, postwo FROM surf_zones WHERE map = "..sql.SQLStr(game.GetMap()))
+    if zones == false then
         print("[surfDB] ERROR DURING LOADZONES SQL")
         print(sql.LastError())
         return
     end
     if not zones then
         print("[surfDB] No zones saved in DB!")
-        return 
+        return
     end
     
     Zones.Cache = {}

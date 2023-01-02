@@ -1,9 +1,9 @@
 "surf"
 {
-	"base"		"base"
+	"base"			"base"
 	"title"			"Skill Surf"
-	"maps"		"^surf_"
-  "category" "other"
+	"maps"			"^surf_"
+	"category"		"other"
 	"menusystem"	"1"
 	"workshopid"	""
 }

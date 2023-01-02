@@ -44,5 +44,5 @@ hook.Add("HUDPaint","surf_spectate_hud",function()
 end)
 
 hook.Add( "HUDDrawTargetID", "surf_disable_targetid_spec", function()
-	if LocalPlayer():GetNWBool("spectating",false) then return false end
+    if LocalPlayer():GetNWBool("spectating",false) then return false end
 end)

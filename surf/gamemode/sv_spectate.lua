@@ -87,7 +87,7 @@ hook.Add( "KeyPress", "surf_spectate_modes", function( ply, key )
             spectatorKeys[player.GetAll()[ply.spectarget]] = spectatorKeys[player.GetAll()[ply.spectarget]]+1
         end
     end
-  
+
     --Spectator Key Sync Display
     if spectatorKeys[ply] and spectatorKeys[ply] > 0 then
         if key == IN_FORWARD then

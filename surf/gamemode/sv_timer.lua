@@ -36,14 +36,12 @@ end
 
 function PLAYER:StartTimer()
     if not self:IsSurfing() then return end
-  
     local vel2d = self:GetVelocity():Length2D()
     if vel2d > CAPVEL then
         self:SetLocalVelocity(Vector(0, 0, 0))
     self:SpawnAtSpawn()
         self:PrintMessage(HUD_PRINTTALK, "[surf] You can't leave the zone with "..math.ceil( vel2d ).." u/s")
     end
-  
     self:SetNWFloat("starttime",CurTime())
 end
 

@@ -12,7 +12,7 @@ SWEP.Slot = 4
 SWEP.SlotPos = 1
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
- 
+
 SWEP.Author = "OverlordAkise"
 SWEP.Contact = ""
 SWEP.Purpose = ""
@@ -36,15 +36,15 @@ SWEP.Secondary.Ammo = "none"
 SWEP.Zone = {}
 SWEP.Zone.First = nil
 SWEP.Zone.Second = nil
- 
+
 function SWEP:Reload()
     if CLIENT then
         if not self.r or not IsValid(self.r) then
             self.r = Derma_Query(
             "Before you click something here be sure to setup your Zone correctly with LMB and RMB!",
             "Admin Zone Gun",
-            "Save Zone as Start", function()self:SendZone(0)end, 
-            "Save Zone as End", function()self:SendZone(1)end, 
+            "Save Zone as Start", function()self:SendZone(0)end,
+            "Save Zone as End", function()self:SendZone(1)end,
             "Reload Zones", function()self:SendZone(-1)end
             )
         end
@@ -131,12 +131,10 @@ function SWEP:Holster()
     self.Zone.Second = nil
     return true
 end
- 
 
 function SWEP:PrimaryAttack()
     self.Zone.First = self:GetOwner():GetEyeTrace().HitPos
 end
- 
 
 function SWEP:SecondaryAttack()
     self.Zone.Second = self:GetOwner():GetEyeTrace().HitPos

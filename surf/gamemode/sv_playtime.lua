@@ -7,11 +7,11 @@ end)
 
 hook.Add("PlayerInitialSpawn","surf_playtime_load",function(ply)
     local playtime = sql.QueryValue("SELECT playtime FROM surf_playtime WHERE steamid = "..sql.SQLStr(ply:SteamID()))
-	ply:SetNWInt("playtime",0)
+    ply:SetNWInt("playtime",0)
     if not playtime then
-		sql.Query("INSERT INTO surf_playtime(steamid, playtime) VALUES("..sql.SQLStr(ply:SteamID())..",0)")
+        sql.Query("INSERT INTO surf_playtime(steamid, playtime) VALUES("..sql.SQLStr(ply:SteamID())..",0)")
         return
-	end
+    end
     ply:SetNWInt("playtime",tonumber(playtime))
     timer.Create(ply:SteamID().."_playtime",PLAYTIME_DELAY,0,function()
         ply:SetNWInt("playtime",ply:GetNWInt("playtime")+PLAYTIME_DELAY)

@@ -1,3 +1,5 @@
+--This weapon exists to allow quick-switching with knives
+
 AddCSLuaFile()
 
 SWEP.Slot = 1
