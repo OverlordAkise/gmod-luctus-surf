@@ -10,7 +10,7 @@ hook.Add("PlayerSay","surf_chat_commands",function(ply,text,team)
         ply:Give("zone_gun")
     end
 
-    if string.StartWith("!resethighscore",text) and ply:IsAdmin() then
+    if ply:IsAdmin() and string.StartWith(text,"!resethighscore")then
         local sid = string.split(text," ")[2]
         if not sid or not string.find(sid,"STEAM_") then
             ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !resethighscore <steamid>")

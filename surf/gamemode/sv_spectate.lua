@@ -1,5 +1,3 @@
-util.AddNetworkString("spec_keys")
-
 spectatorKeys = spectatorKeys or {}
 
 hook.Add("PlayerInitialSpawn","surf_keys_init",function(ply)
@@ -7,7 +5,7 @@ hook.Add("PlayerInitialSpawn","surf_keys_init",function(ply)
 end)
 
 hook.Add("PlayerSay","surf_spectate_chat",function(ply,text,team)
-    if text == "!spec" then
+    if text == "!spec" or spec == "!spectate" then
         if ply.spectating == nil then ply.spectating = false end
         ply.spectating = not ply.spectating
         if ply.spectating then
@@ -89,6 +87,7 @@ hook.Add( "KeyPress", "surf_spectate_modes", function( ply, key )
     end
 
     --Spectator Key Sync Display
+    --Only set if player is being spectated
     if spectatorKeys[ply] and spectatorKeys[ply] > 0 then
         if key == IN_FORWARD then
             ply:SetNWBool("spec_w",true)

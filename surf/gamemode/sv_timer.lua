@@ -1,6 +1,4 @@
 local PLAYER = FindMetaTable( "Player" )
-local CT = CurTime
-local CAPVEL = 350
 
 Timer = {}
 
@@ -37,16 +35,15 @@ end
 function PLAYER:StartTimer()
     if not self:IsSurfing() then return end
     local vel2d = self:GetVelocity():Length2D()
-    if vel2d > CAPVEL then
+    if vel2d > SURF_MAX_START_VEL then
         self:SetLocalVelocity(Vector(0, 0, 0))
-    self:SpawnAtSpawn()
+        self:SpawnAtSpawn()
         self:PrintMessage(HUD_PRINTTALK, "[surf] You can't leave the zone with "..math.ceil( vel2d ).." u/s")
     end
     self:SetNWFloat("starttime",CurTime())
 end
 
 function PLAYER:ResetTimer()
-    if self:GetNWFloat("starttime",0) == 0 then return end
     self:SetNWFloat("starttime",0)
 end
 

@@ -3,6 +3,7 @@ local ss = SysTime()
 include("sh_hook.lua")
 include("shared.lua")
 include("sh_player_class.lua")
+include("sv_defaultzones.lua")
 include("sv_sql.lua")
 include("sv_timer.lua")
 include("sv_zones.lua")
@@ -19,6 +20,8 @@ AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("cl_rtv.lua")
 AddCSLuaFile("cl_spectate.lua")
+
+SURF_MAX_START_VEL = 350
 
 function GM:Initialize()
     --im stuff
