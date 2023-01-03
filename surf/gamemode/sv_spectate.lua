@@ -36,54 +36,41 @@ hook.Add("PlayerSay","surf_spectate_chat",function(ply,text,team)
     end
 end)
 
+local specmodes = {
+    OBS_MODE_IN_EYE,
+    OBS_MODE_CHASE,
+    OBS_MODE_ROAMING
+}
+
 hook.Add( "KeyPress", "surf_spectate_modes", function( ply, key )
     --Spectator Keybinds
     if ply.spectating then
         if not ply.spectarget then ply.spectarget = 1 end
         if (key == IN_RELOAD) then
-            if ply.specmode == OBS_MODE_IN_EYE then
-                ply.specmode = OBS_MODE_CHASE
-            elseif ply.specmode == OBS_MODE_ROAMING then
-                ply.specmode = OBS_MODE_IN_EYE
-            elseif ply.specmode == OBS_MODE_CHASE then
-                ply.specmode = OBS_MODE_ROAMING
-            end
-            ply:Spectate(ply.specmode)
+            ply.specmode = (ply.specmode+1)%(#specmodes)
+            ply:Spectate(specmodes[ply.specmode+1])
         end
+        local PlusOrMinus = 0
+        PrintMessage(3,ply.spectarget)
         if (key == IN_ATTACK) then
-            if IsValid(player.GetAll()[ply.spectarget]) then
-                spectatorKeys[player.GetAll()[ply.spectarget]] = math.max(spectatorKeys[player.GetAll()[ply.spectarget]]-1,0)
-            end
-            ply.spectarget = ply.spectarget+1
-            if ply.spectarget > #player.GetAll() then
-                ply.spectarget = 1
-            end
-            if player.GetAll()[ply.spectarget] == ply then
-                ply.spectarget = ply.spectarget+1
-                if ply.spectarget > #player.GetAll() then
-                    ply.spectarget = 1
-                end
-            end
-            ply:SpectateEntity(player.GetAll()[ply.spectarget])
-            spectatorKeys[player.GetAll()[ply.spectarget]] = spectatorKeys[player.GetAll()[ply.spectarget]]+1
+            PlusOrMinus = PlusOrMinus + 1
         end
         if (key == IN_ATTACK2) then
-            if IsValid(player.GetAll()[ply.spectarget]) then
-                spectatorKeys[player.GetAll()[ply.spectarget]] = math.max(spectatorKeys[player.GetAll()[ply.spectarget]]-1,0)
-            end
-            ply.spectarget = ply.spectarget-1
-            if ply.spectarget < 1 then
-                ply.spectarget = #player.GetAll()
-            end
-            if player.GetAll()[ply.spectarget] == ply then
-                ply.spectarget = ply.spectarget-1
-                if ply.spectarget < 1 then
-                    ply.spectarget = #player.GetAll()
-                end
-            end
-            ply:SpectateEntity(player.GetAll()[ply.spectarget])
-            spectatorKeys[player.GetAll()[ply.spectarget]] = spectatorKeys[player.GetAll()[ply.spectarget]]+1
+            PlusOrMinus = PlusOrMinus - 1
         end
+        if (key == IN_ATTACK2 or key == IN_ATTACK) then
+            local allPly = player.GetAll()
+            if IsValid(allPly[ply.spectarget+1]) then
+                spectatorKeys[allPly[ply.spectarget+1]] = math.max(spectatorKeys[allPly[ply.spectarget+1]]-1,0)
+            end
+            ply.spectarget = (ply.spectarget+PlusOrMinus)%(#allPly)
+            if allPly[ply.spectarget+1] == ply then
+                ply.spectarget = (ply.spectarget+PlusOrMinus)%(#allPly)
+            end
+            ply:SpectateEntity(allPly[ply.spectarget+1])
+            spectatorKeys[allPly[ply.spectarget+1]] = spectatorKeys[allPly[ply.spectarget+1]]+1
+        end
+        PrintMessage(3,ply.spectarget)
     end
 
     --Spectator Key Sync Display
