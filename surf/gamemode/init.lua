@@ -35,6 +35,7 @@ hook.Add( "InitPostEntity", "surf_sv_init", function()
     RunConsoleCommand("sv_friction","8")
     RunConsoleCommand("sv_sticktoground","0")
     RunConsoleCommand("sv_maxvelocity", "90000")
+    RunConsoleCommand("sv_gravity", "525")
     --Optimization
     hook.Remove("PlayerTick", "TickWidgets")
     hook.Remove("PreDrawHalos", "PropertiesHover")
