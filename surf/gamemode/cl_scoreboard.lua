@@ -4,20 +4,13 @@
 local sboard_Score_ServerName = "Luctus Surf"
 local sboard_Score_WebsiteLink = "https://luctus.at/"
 
---------------------------
--- End of configuration --
---------------------------
-
 surface.CreateFont("sboardScoreFontBig", { font = "Montserrat", size = 35, weight = 800, antialias = true, bold = true })
 surface.CreateFont("sboardScoreFontSmall", { font = "Montserrat", size = 20, weight = 700, antialias = true, bold = true })
-
 
 function lucidDrawRect(x, y, w, h, col)
     surface.SetDrawColor(col)
     surface.DrawRect(x, y, w, h)
 end
-
-
 
 function LEnableClicker(ply,key)
     if not ply == LocalPlayer() then return end

@@ -38,7 +38,7 @@ end
 function PLAYER:StartTimer()
     if not self:IsSurfing() then return end
     local vel2d = self:GetVelocity():Length2D()
-    if vel2d > SURF_MAX_START_VEL then
+    if vel2d > LUCTUS_SURF_MAX_START_VEL then
         self:SetLocalVelocity(Vector(0, 0, 0))
         self:SpawnAtSpawn()
         self:PrintMessage(HUD_PRINTTALK, "[surf] You can't leave the zone with "..math.ceil( vel2d ).." u/s")

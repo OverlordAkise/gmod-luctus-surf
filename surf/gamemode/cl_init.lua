@@ -8,10 +8,6 @@ include("cl_scoreboard.lua")
 include("cl_rtv.lua")
 include("cl_spectate.lua")
 
-LUCTUS_SURF_COL_ACCENT = Color(100, 100, 200, 255)
-LUCTUS_SURF_COL_BG = Color(35, 35, 35)
-LUCTUS_SURF_COL_FG = Color(42, 42, 42)
-
 local CPlayers = CreateClientConVar("ls_showothers", "1", true, false)
 local CCrosshair = CreateClientConVar("ls_crosshair", "1", true, false)
 local CTargetID = CreateClientConVar("ls_targetids", "0", true, false)

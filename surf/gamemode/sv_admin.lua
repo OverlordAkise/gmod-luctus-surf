@@ -130,7 +130,7 @@ hook.Add("PlayerSay","surf_admincommands",function(ply,text,team)
         end
         
         if cmd == "!frtv" then
-            rtvStart()
+            SurfRtvStart()
         end
         
         if cmd == "!mute" then

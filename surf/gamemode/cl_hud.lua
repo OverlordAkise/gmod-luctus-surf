@@ -14,7 +14,7 @@ local mapname = ""
 timer.Create("luctus_surf_rtv_time",1,0,function()
     mapname = game.GetMap()
     localtime = "Time: "..os.date("%H:%M:%S", os.time())
-    rtvtime = "Mapchange in: "..ConvertRTVTime(GetGlobal2Int("rtv_autotime",0)-CurTime())
+    rtvtime = "Mapchange in: "..string.NiceTime(GetGlobal2Int("rtv_autotime",0)-CurTime())
 end)
 
 function GM:HUDPaintBackground()
@@ -57,6 +57,8 @@ function GM:HUDPaintBackground()
     draw.SimpleText(localtime, "Trebuchet24", rtvStartX+20, rtvStartY+50, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     draw.SimpleText(rtvtime, "Trebuchet24", rtvStartX+20, rtvStartY+80, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
+
+--THIRDPERSON STUFF
 
 local thirdpersonActive = false
 local thirdpersonRight = false

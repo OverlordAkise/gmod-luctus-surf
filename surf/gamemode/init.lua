@@ -21,8 +21,6 @@ AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("cl_rtv.lua")
 AddCSLuaFile("cl_spectate.lua")
 
-SURF_MAX_START_VEL = 350
-
 function GM:Initialize()
     --im stuff
 end
