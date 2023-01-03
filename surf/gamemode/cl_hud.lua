@@ -4,7 +4,7 @@ local fo, cl = string.format, math.Clamp
 local Xo = 20
 local Yo = 115
 local color_white = Color(255,255,255)
-local rtvStartX = ScrW()-220
+local rtvStartX = ScrW()-300
 local rtvStartY = 20
     
 local rtvtime = 0
@@ -14,7 +14,7 @@ local mapname = ""
 timer.Create("luctus_surf_rtv_time",1,0,function()
     mapname = game.GetMap()
     localtime = "Time: "..os.date("%H:%M:%S", os.time())
-    rtvtime = "rtv:    "..ConvertRTVTime(GetGlobal2Int("rtv_autotime",0)-CurTime())
+    rtvtime = "Mapchange in: "..ConvertRTVTime(GetGlobal2Int("rtv_autotime",0)-CurTime())
 end)
 
 function GM:HUDPaintBackground()
@@ -50,10 +50,55 @@ function GM:HUDPaintBackground()
     --Info
     surface.SetDrawColor( LUCTUS_SURF_COL_BG )
     surface.SetDrawColor( LUCTUS_SURF_COL_BG )
-    surface.DrawRect( rtvStartX, rtvStartY, 200, 103 )
+    surface.DrawRect( rtvStartX, rtvStartY, 280, 103 )
     surface.SetDrawColor( LUCTUS_SURF_COL_FG )
-    surface.DrawRect( rtvStartX + 5, rtvStartY + 5, 190, 93 )
+    surface.DrawRect( rtvStartX + 5, rtvStartY + 5, 270, 93 )
     draw.SimpleText(mapname, "Trebuchet24", rtvStartX+20, rtvStartY+20, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     draw.SimpleText(localtime, "Trebuchet24", rtvStartX+20, rtvStartY+50, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     draw.SimpleText(rtvtime, "Trebuchet24", rtvStartX+20, rtvStartY+80, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
+
+local thirdpersonActive = false
+local thirdpersonRight = false
+
+local cthirdperson = CreateClientConVar("ls_thirdperson", "0", true, false)
+local cthirdpersonright = CreateClientConVar("ls_thirdpersonright", "0", true, false)
+
+cvars.AddChangeCallback("ls_thirdperson", function(cvar, prev, new)
+    if new == "1" then
+        thirdpersonActive = true
+    else
+        thirdpersonActive = false
+    end
+end)
+
+cvars.AddChangeCallback("ls_thirdpersonright", function(cvar, prev, new)
+    if new == "1" then
+        thirdpersonRight = true
+    else
+        thirdpersonRight = false
+    end
+end)
+
+hook.Add("ShouldDrawLocalPlayer", "luctus_surf_thirdperson", function()
+	if thirdpersonActive and LocalPlayer():Alive() then
+		return true
+	end
+end)
+
+hook.Add("CalcView", "luctus_surf_thirdperson", function(ply, pos, angles, fov)
+	if thirdpersonActive and ply:Alive() then
+		local view = {}
+		view.origin = pos - ( angles:Forward() * 70 ) + ( angles:Right() * (thirdpersonRight and -20 or 20) ) + ( angles:Up() * 5 )
+		--view.origin = pos - ( angles:Forward() * 70 )
+		view.angles = ply:EyeAngles() + Angle( 1, 1, 0 )
+		view.fov = fov
+		return GAMEMODE:CalcView( ply, view.origin, view.angles, view.fov )
+	end
+end)
+
+hook.Add("PlayerBindPress","luctus_surf_tpbind",function(ply, bind, pressed, code)
+    if bind == "headtrack_reset_home_pos" then
+        RunConsoleCommand("ls_thirdperson",(thirdpersonActive and "0" or "1"))
+    end
+end)
