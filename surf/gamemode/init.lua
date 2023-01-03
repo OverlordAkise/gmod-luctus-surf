@@ -58,7 +58,7 @@ function GM:PlayerInitialSpawn(ply)
     ply:LoadBestTime()
 end
 
-function GM:CanPlayerSuicide() return false end
+function GM:CanPlayerSuicide() return true end
 function GM:PlayerShouldTakeDamage() return false end
 function GM:GetFallDamage() return false end
 function GM:PlayerCanHearPlayersVoice(listener, talker)

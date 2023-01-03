@@ -24,6 +24,9 @@ function PLAYER:LoadBestTime()
 end
 
 function PLAYER:SpawnAtSpawn()
+    local plyAng = self:EyeAngles()
+    plyAng.r = 0--fix surf_mesa bug
+    self:SetEyeAngles(plyAng)
     if Zones.StartPoint then
         self:SetPos(Zones:GetSpawnPoint(Zones.StartPoint))
     end

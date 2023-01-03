@@ -4,15 +4,15 @@ GM.DisplayName = GM.Name
 GM.ServerName = GM.Name
 GM.Author = "OverlordAkise"
 GM.Email = ""
-GM.Website = ""
+GM.Website = "luctus.at"
 GM.Version = 1.00
 GM.FullPath = "gamemodes/"..GM.FolderName.."/gamemode/"
 
-DeriveGamemode( "base" )
-DEFINE_BASECLASS( "gamemode_base" )
+DeriveGamemode("base")
+DEFINE_BASECLASS("gamemode_base")
 
 function GM:PlayerNoClip(ply)
-    return false
+    return ply:IsAdmin()
 end
 
 local fl, fo, od, ot = math.floor, string.format, os.date, os.time
