@@ -88,6 +88,16 @@ surf_admincmds = {
             RunConsoleCommand("changelevel", game.GetMap())
         end)
     end,
+    ["maplist"] = function(ply,args)
+        ply:PrintMessage(HUD_PRINTTALK, "Check your console!")
+        local maps = file.Find("maps/surf_*.bsp","GAME")
+        ply:PrintMessage(HUD_PRINTCONSOLE,"------------")
+        ply:PrintMessage(HUD_PRINTCONSOLE,"Maps:")
+        for k,v in pairs(maps) do
+            ply:PrintMessage(HUD_PRINTCONSOLE,v)
+        end
+        ply:PrintMessage(HUD_PRINTCONSOLE,"------------")
+    end,
     ["map"] = function(ply,args)
         if file.Exists("maps/"..args..".bsp","GAME") then
             PrintMessage(HUD_PRINTTALK, "[admin] Map will be changed to "..args.." in 10 seconds!")

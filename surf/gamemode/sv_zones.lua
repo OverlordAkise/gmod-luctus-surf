@@ -103,7 +103,7 @@ net.Receive("surf_setzone",function(len,ply)
     local res = nil
     if action > -1 then
         LuctusDbDeleteZone(action)
-        local success = LuctusDbInsertZone(action, zones.First, zone.Second)
+        local success = LuctusDbInsertZone(action, zones.First, zones.Second)
         if success then
             print("[surf][zones] New Zone for map "..game.GetMap().." (type "..action..") successfully inserted!")
             ply:PrintMessage(HUD_PRINTTALK, "[zones] Successfully saved new zone!")
