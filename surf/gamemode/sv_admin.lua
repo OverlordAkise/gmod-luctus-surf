@@ -4,112 +4,14 @@ local superadmins = {
 
 --InitialSpawn doesn't want to work with SetUserGroup
 hook.Add("PlayerSpawn","surf_admin_check",function(ply)
-    if not ply.adminChecked then
-        CheckAdmin(ply)
-        ply.adminChecked = true
+    if ply.adminChecked then return end
+    ply.adminChecked = true
+    if LuctusDbCheckAdmin(ply:SteamID()) then
+        ply:SetUserGroup("admin")
     end
-end)
-
-hook.Add("PlayerSay","surf_setadmin",function(ply,text,team)
-    if ply:IsSuperAdmin() and string.StartWith(text,"!setadmin") then
-        local wantedName = string.lower(string.Split(text," ")[2])
-        local wantedPly = nil
-        for k,v in pairs(player.GetAll()) do
-            if string.find(string.lower(v:Nick()),wantedName) then
-                if wantedPly ~= nil then
-                    ply:PrintMessage(HUD_PRINTTALK, "[admin] Found 2 people! Please set the name better!")
-                    return
-                end
-                wantedPly = v
-            end
-        end
-        AddAdmin(wantedPly)
-    end
-    if ply:IsSuperAdmin() and string.StartWith(text,"!removeadmin") then
-        local wantedName = string.lower(string.Split(text," ")[2])
-        local wantedPly = nil
-        for k,v in pairs(player.GetAll()) do
-            if string.find(string.lower(v:Nick()),wantedName) then
-                if wantedPly ~= nil then
-                    ply:PrintMessage(HUD_PRINTTALK, "[admin] Found 2 people! Please set the name better!")
-                    return
-                end
-                wantedPly = v
-            end
-        end
-        RemoveAdmin(wantedPly)
-    end
-end)
-
-function CheckAdmin(ply)
-    local res = sql.Query("SELECT * FROM surf_admins WHERE sid = "..sql.SQLStr(ply:SteamID()))
-    --sid,nick,role
-    if res == false then
-        print("[surf][db] ERROR DURING CheckAdmin!")
-        print(sql.LastError())
-        return
-    end
-    
-    if not res then return end
-    
-    if res and res[1] then
-        ply:SetUserGroup(res[1]["role"])
-        print("[surf][admin] Successfully set usergroup '"..res[1]["role"].."' for '"..ply:Nick().."'")
-    end
-    if superadmins[ply:SteamID()] and ply:GetUserGroup() ~= "superadmin" then
-        local res = sql.Query("INSERT INTO surf_admins(sid,nick,role) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(ply:Nick())..",'superadmin')")
-        if res == false then
-            print("[surf][db] ERROR DURING SUPERADMIN ADD!")
-            print(sql.LastError())
-            return
-        end
-        print("[surf][admin] Successfully saved superadmin for "..ply:Nick())
+    if superadmins[ply:SteamID()] then
         ply:SetUserGroup("superadmin")
     end
-end
-
-function AddAdmin(ply)
-    local res = sql.Query("INSERT INTO surf_admins(sid,nick,role) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(ply:Nick())..",'admin')")
-    if res == false then
-        print("[surf][db] ERROR DURING AddAdmin!")
-        print(sql.LastError())
-        return
-    end
-    ply:SetUserGroup("admin")
-    print("[surf][admin] Successfully added player as admin!",ply:Nick(),ply:SteamID())
-    PrintMessage(HUD_PRINTTALK,"[admin] Added player "..ply:Nick().." as admin!")
-end
-
-function RemoveAdmin(ply)
-    local res = sql.Query("DELETE FROM surf_admins WHERE sid = "..sql.SQLStr(ply:SteamID()))
-    if res == false then
-        print("[surf][db] ERROR DURING RemoveAdmin!")
-        print(sql.LastError())
-        return
-    end
-    print("[surf][admin] Successfully removed player from admins! ("..ply:Nick()..")")
-    PrintMessage(HUD_PRINTTALK,"[admin] Removed player "..ply:Nick().." from admins!")
-end
-
-function getPlyByName(name)
-    if not name then return nil end
-    for k,v in pairs(player.GetAll()) do
-        if string.find(string.lower(v:Nick()),string.lower(name)) then
-            return v
-        end
-    end
-    return nil
-end
-
-local admin_commands = {}
-
-admin_commands["list"] = function(args)
-    PrintTable(args)
-end
-
-concommand.Add("lsa",function(ply,cmd,args,argStr)
-    if not ply:IsAdmin() then return end
-    PrintTable(args)
 end)
 
 surf_admincmds = {
@@ -195,6 +97,24 @@ surf_admincmds = {
         else
             ply:PrintMessage(HUD_PRINTTALK, "[admin] This map doesn't exist on this server!")
         end
+    end,
+    ["setadmin"] = function(ply,args)
+        local wantedPly, reason = LuctusFindPlyByName(args)
+        if not IsValid(wantedPly) then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            return
+        end
+        wantedPly:SetUserGroup("admin")
+        LuctusDbAddAdmin(wantedPly:SteamID(),wantedPly:Nick())
+    end,
+    ["removeadmin"] = function(ply,args)
+        local wantedPly, reason = LuctusFindPlyByName(args)
+        if not IsValid(wantedPly) then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            return
+        end
+        wantedPly:SetUserGroup("user")
+        LuctusDbRemoveAdmin(wantedPly:SteamID())
     end,
     ["kill"] = function(admin,args)
         for k,v in pairs(player.GetAll()) do

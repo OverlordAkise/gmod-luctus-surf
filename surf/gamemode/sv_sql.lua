@@ -86,6 +86,8 @@ function LuctusDbDeleteZone(action)
         ErrorNoHaltWithStack(sql.LastError())
     end
 end
+
+
 function LuctusDbInsertZone(zoneType, firVec, secVec)
     local res = sql.Query("INSERT INTO surf_zones VALUES ("..sql.SQLStr(game.GetMap())..","..zoneType..", "..sql.SQLStr(firVec)..", "..sql.SQLStr(secVec)..")")
         if res == false then
@@ -94,6 +96,39 @@ function LuctusDbInsertZone(zoneType, firVec, secVec)
             return false
         end
     return true
+end
+
+
+function LuctusDbCheckAdmin(steamid)
+    local res = sql.QueryValue("SELECT nick FROM surf_admins WHERE sid = "..sql.SQLStr(steamid))
+    if res == false then
+        print("[surf][db] ERROR DURING CHECK ADMIN!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return false
+    end
+    if not res then
+        return false
+    end
+    return true
+end
+
+
+function LuctusDbAddAdmin(steamid,nick)
+    local res = sql.Query("INSERT INTO surf_admins(sid,nick,role) VALUES("..sql.SQLStr(steamid)..","..sql.SQLStr(nick)..",'admin')")
+    if res == false then
+        print("[surf][db] ERROR DURING AddAdmin!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return
+    end
+end
+
+function LuctusDbRemoveAdmin(steamid)
+    local res = sql.Query("DELETE FROM surf_admins WHERE sid = "..sql.SQLStr(steamid))
+    if res == false then
+        print("[surf][db] ERROR DURING ADMIN REMOVE!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return
+    end
 end
 
 
