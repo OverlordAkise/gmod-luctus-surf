@@ -38,11 +38,7 @@ hook.Add("OnSpawnMenuOpen","surf_reset_shortcut",function()
 end)
 
 cvars.AddChangeCallback("ls_crosshair", function(cvar, prev, new)
-    if new == "0" then
-        HUDItems["CHudCrosshair"] = true
-    else
-        HUDItems["CHudCrosshair"] = false
-    end
+    HUDItems["CHudCrosshair"] = new == "0" and true or false
 end)
 
 function PlayerVisibility(nTarget)
@@ -76,9 +72,7 @@ function ToggleChat()
 end
 
 hook.Add("ChatText", "surf_suppress_joinleavetext", function(nIndex, szName, szText, szID)
-    if szID == "joinleave" then
-        return true
-    end
+    if szID == "joinleave" then return true end
 end)
 
 

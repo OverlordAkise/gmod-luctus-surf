@@ -24,7 +24,6 @@ hook.Add("HUDPaint","surf_spectate_hud",function()
         draw.WordBox(8, scrw/2-25, scrh-250, "S", "lsurf_spec_keys", lp:KeyDown(IN_BACK) and colwhite or coldarkened, colblack)
         draw.WordBox(8, scrw/2+10, scrh-250, "D", "lsurf_spec_keys", lp:KeyDown(IN_MOVERIGHT) and colwhite or coldarkened, colblack)
         draw.WordBox(8, scrw/2-150, scrh-250, "CTRL", "lsurf_spec_keys", lp:KeyDown(IN_DUCK) and colwhite or coldarkened, colblack)
-        draw.WordBox(8, scrw/2-50, scrh-190, "SPACE", "lsurf_spec_keys", lp:KeyDown(IN_JUMP) and colwhite or coldarkened, colblack)
     end
     if lp:GetNWBool("spectating",false) then
         draw.SimpleTextOutlined("SPECTATING", "DermaLarge",scrw/2, scrh/10, colwhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, colblack)

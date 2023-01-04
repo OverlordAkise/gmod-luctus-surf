@@ -5,13 +5,12 @@ local color_black = Color(0, 0, 0)
 
 net.Receive("surf_rtvmaps",function()
     local done = net.ReadBool()
+    rtv_maps = {}
     if done then
-        rtv_maps = {}
         hook.Remove("HUDPaint","surf_rtv_votemaps")
         return
     end
     local mapNr = net.ReadInt(6)
-    rtv_maps = {}
     for i=1,mapNr do
         local map = net.ReadString()
         table.insert(rtv_maps,map)

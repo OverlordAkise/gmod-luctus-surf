@@ -19,8 +19,9 @@ function LuctusDbInit()
     res = sql.Query("CREATE TABLE IF NOT EXISTS surf_admins (sid TEXT, nick TEXT, role TEXT);")
     if res == false then PrintError(sql.LastError()) end
     res = sql.Query("CREATE TABLE IF NOT EXISTS gmod_bans (sid VARCHAR(255), nick TEXT, unbanTime TEXT, reason TEXT, sidadmin TEXT, nickadmin TEXT);")
+    res = sql.Query("CREATE TABLE IF NOT EXISTS surf_playtime (steamid TEXT, playtime INTEGER )")
     if res == false then PrintError(sql.LastError()) end
-
+    
     if insertDefaults then
         print("[surf][db] Inserting default values for maps...")
         LuctusDbInsertDefaultZones()
@@ -82,6 +83,29 @@ function LuctusDbResetHighscore(steamid)
     local res = sql.Query("DELETE FROM surf_times WHERE map = "..sql.SQLStr(game.GetMap()).." AND sid = "..sql.SQLStr(args))
     if res == false then
         print("[surf][db] ERROR DURING RESETHIGHSCORE")
+        ErrorNoHaltWithStack(sql.LastError())
+    end
+end
+
+
+function LuctusDbPlaytimeLoad(ply)
+    local playtime = sql.QueryValue("SELECT playtime FROM surf_playtime WHERE steamid = "..sql.SQLStr(ply:SteamID()))
+    if playtime == false then
+        print("[surf][db] ERROR DURING PLAYTIME LOAD")
+        ErrorNoHaltWithStack(sql.LastError())
+    end
+    if not playtime then
+        sql.Query("INSERT INTO surf_playtime(steamid, playtime) VALUES("..sql.SQLStr(ply:SteamID())..",0)")
+        return
+    end
+    ply:SetNWInt("playtime",tonumber(playtime))
+end
+
+
+function LuctusDbPlaytimeSave(steamid,playtime)
+    local res = sql.Query("UPDATE surf_playtime SET playtime = "..playtime.." WHERE steamid = "..sql.SQLStr(steamid))
+    if res == false then
+        print("[surf][db] ERROR DURING PLAYTIME SAVE")
         ErrorNoHaltWithStack(sql.LastError())
     end
 end
