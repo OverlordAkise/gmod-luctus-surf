@@ -30,13 +30,14 @@ function ENT:StartTouch(ent)
     if IsValid(ent) and ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
         local zone = self:GetZoneType()
         if zone == self.Zone.MStart then
-            ent:ResetTimer()
+            LuctusTimerStop(ent)
         elseif zone == self.Zone.MEnd and ent:GetNWFloat("starttime",0) ~= 0 then
-            ent:StopTimer()
+            LuctusTimerFinish(ent)
         elseif zone == self.Zone.AC then
-            ent:KillTimer()
+            LuctusTimerStop(ent)
         elseif zone == self.Zone.Restart then
-            ent:RestartPlayer()
+            LuctusTimerStop(ent)
+            SpawnPlyAtStart(ent)
         end
     end
 end
@@ -45,7 +46,7 @@ function ENT:EndTouch(ent)
     if IsValid(ent) and ent:IsPlayer() and ent:Team() ~= TEAM_SPECTATOR then
         local zone = self:GetZoneType()
         if zone == self.Zone.MStart then
-            ent:StartTimer()
+            LuctusTimerStart(ent)
         end
     end
 end
