@@ -1,5 +1,6 @@
 util.AddNetworkString("surf_rtvmaps")
 util.AddNetworkString("surf_rtvsound")
+util.AddNetworkString("surf_rtv_livejoin")
 
 rtv_in_progress = false
 rtv_selectedMaps = {}
@@ -121,15 +122,7 @@ function SurfRtvEnd()
     if (table.Count(nextMaps) == 0) then
         highestMap = game.GetMap()
     end
-    print("DEBUG:")
-    print("nextMaps:")
-    PrintTable(nextMaps)
-    print("highestMap:")
-    print(highestMap)
-    print("nextMultiple:")
-    PrintTable(nextMultiple)
-    print("#nextMaps")
-    print(table.Count(nextMaps))
+    print("[surf][rtv] Next map:",highestMap)
     if highestMap ~= game.GetMap() then
         PrintMessage(HUD_PRINTTALK, "[rtv] Next map is "..highestMap.."!")
         PrintMessage(HUD_PRINTTALK, "[rtv] Changing level in "..LUCTUS_SURF_RTV_MAPCHANGE_DELAY.." seconds!")
@@ -181,25 +174,22 @@ hook.Add("PlayerDisconnected","surf_rtv_recalculate",function(ply)
     end)
 end)
 
-hook.Add("PlayerInitialSpawn","surf_rtv_in_progress",function(ply)
-    hook.Add("SetupMove", ply, function(self, ply, _, cmd)
-        if self == ply and not cmd:IsForced() then
-            if rtv_in_progress then
-                net.Start("surf_rtvmaps")
-                    net.WriteBool(false)
-                    net.WriteInt(table.Count(rtv_selectedMaps),6)
-                    for k,v in pairs(rtv_selectedMaps) do
-                        net.WriteString(k)
-                    end
-                net.Broadcast()
+net.Receive("surf_rtv_livejoin",function(len,ply)
+    if ply.rtvsynced then return end
+    ply.rtvsynced = true
+    if rtv_in_progress then
+        net.Start("surf_rtvmaps")
+            net.WriteBool(false)
+            net.WriteInt(table.Count(rtv_selectedMaps),6)
+            for k,v in pairs(rtv_selectedMaps) do
+                net.WriteString(k)
             end
-            hook.Remove("SetupMove", self)
-        end
-    end)
+        net.Broadcast()
+    end
 end)
 
 
-hook.Add("InitPostEntity", "surf_rtv_tilltime", function()
+hook.Add("InitPostEntity", "surf_rtv_autovote_antispam", function()
     timer.Create("surf_rtv_antispam_mapchange",LUCTUS_SURF_RTV_AUTO_ANTISPAM,1,function()
         rtv_allowed = true
     end)

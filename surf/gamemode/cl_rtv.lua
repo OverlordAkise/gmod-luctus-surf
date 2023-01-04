@@ -3,6 +3,11 @@ rtv_maps = {}
 local color_white = Color(255, 255, 255)
 local color_black = Color(0, 0, 0)
 
+hook.Add("InitPostEntity", "surf_rtv_check_live_vote", function()
+	net.Start("surf_rtv_livejoin")
+	net.SendToServer()
+end)
+
 net.Receive("surf_rtvmaps",function()
     local done = net.ReadBool()
     rtv_maps = {}
