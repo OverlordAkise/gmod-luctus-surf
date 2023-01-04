@@ -78,3 +78,38 @@ function Zones:GetSpawnPoint( data )
     
     return out
 end
+
+--Zonegun sends new zone
+net.Receive("surf_setzone",function(len,ply)
+    print("[surf][zones] Received new message!")
+    if not ply:IsAdmin() then return end
+    if ply:GetActiveWeapon():GetClass() ~= "zone_gun" then return end
+    local action = net.ReadInt(4) --action = zonetype, if -1 = reload zones
+    if action == -1 then
+        Zones:Reload()
+        ply:PrintMessage(HUD_PRINTTALK, "[zones] Reloaded zones!")
+        return
+    end
+    local zones = ply:GetActiveWeapon().Zone
+    if not zones.First or not zones.Second then
+        ply:PrintMessage(HUD_PRINTTALK, "[zones] Error: First or Second zone point missing!")
+        return
+    end
+    zones.First = zones.First
+    zones.Second = zones.Second + Vector(0,0,128)
+    
+    if action ~= -1 and action ~= 1 and action ~= 0 then return end
+    print("[surf][zones] Checks done, Got new Zone info! Updating...")
+    local res = nil
+    if action > -1 then
+        LuctusDbDeleteZone(action)
+        local success = LuctusDbInsertZone(action, zones.First, zone.Second)
+        if success then
+            print("[surf][zones] New Zone for map "..game.GetMap().." (type "..action..") successfully inserted!")
+            ply:PrintMessage(HUD_PRINTTALK, "[surfDB] Successfully saved new zone!")
+        else
+            print("[surf][zones] Error: New Zone for map "..game.GetMap().." (type "..action..") not saved!")
+            ply:PrintMessage(HUD_PRINTTALK, "[surfDB] Error during saving!!")
+        end
+    end
+end)

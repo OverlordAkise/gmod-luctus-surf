@@ -1,17 +1,10 @@
 include("shared.lua")
 
-local Zone = {
-    MStart = 0,
-    MEnd = 1,
-    BStart = 2,
-    BEnd = 3,
-}
-
 local DrawArea = {
-    [Zone.MStart] = Color( 0, 230, 0, 255 ),
-    [Zone.MEnd] = Color( 180, 0, 0, 255 ),
-    [Zone.BStart] = Color( 127, 140, 141 ),
-    [Zone.BEnd] = Color( 52, 73, 118 ),
+    [ENT.Zone.MStart] = Color( 0, 230, 0, 255 ),
+    [ENT.Zone.MEnd] = Color( 180, 0, 0, 255 ),
+    [ENT.Zone.BStart] = Color( 127, 140, 141 ),
+    [ENT.Zone.BEnd] = Color( 52, 73, 118 ),
 }
 
 function ENT:Initialize() end

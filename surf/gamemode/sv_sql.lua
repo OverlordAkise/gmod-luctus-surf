@@ -79,6 +79,24 @@ function LuctusDbSavePlyRecord(ply, newtime, oldtime)
 end
 
 
+function LuctusDbDeleteZone(action)
+    local res = sql.Query("DELETE FROM surf_zones WHERE map = "..sql.SQLStr(game.GetMap()).." AND type = "..action)
+    if res == false then
+        print("[surf][db] ERROR DURING DELETE ZONE!")
+        ErrorNoHaltWithStack(sql.LastError())
+    end
+end
+function LuctusDbInsertZone(zoneType, firVec, secVec)
+    local res = sql.Query("INSERT INTO surf_zones VALUES ("..sql.SQLStr(game.GetMap())..","..zoneType..", "..sql.SQLStr(firVec)..", "..sql.SQLStr(secVec)..")")
+        if res == false then
+            print("[surf][db] ERROR DURING INSERT ZONE!")
+            ErrorNoHaltWithStack(sql.LastError())
+            return false
+        end
+    return true
+end
+
+
 function LuctusDbBanPly(ply,adminId,adminName)
     local res = sql.Query(string.format("INSERT INTO gmod_bans(sid, nick, unbanTime, reason, sidadmin, nickadmin) VALUES(%s,%s,%s,%s,%s,%s)", sql.SQLStr(ply:SteamID()), sql.SQLStr(ply:Nick()), "-1", "'unknown'", sql.SQLStr(adminId), sql.SQLStr(adminName)))
     if res == false then

@@ -41,8 +41,7 @@ function PLAYER:StopTimer()
     self:SetNWFloat("starttime",0)
 end
 
-function PLAYER:StopAnyTimer()
-    if not self:IsSurfing() then return end
+function PLAYER:KillTimer()
     self:SetNWFloat("starttime",0)
 end
 
