@@ -53,7 +53,7 @@ function GM:PlayerSpawn(ply)
 end
 
 function GM:PlayerInitialSpawn(ply)
-    ply:LoadBestTime()
+    LuctusDbLoadPlyRecord(ply)
 end
 
 function GM:CanPlayerSuicide() return true end

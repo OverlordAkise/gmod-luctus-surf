@@ -39,6 +39,46 @@ function LuctusDbInit()
 end
 
 
+function LuctusDbLoadPlyRecord(ply)
+    ply:SetNWInt( "style", 1 )
+    ply:SetNWFloat( "record", 0 )
+    local res = sql.QueryValue("SELECT time FROM surf_times WHERE sid = "..sql.SQLStr(ply:SteamID()).." AND map = "..sql.SQLStr(game.GetMap()))
+    if res == false then
+        print("[surf][db] ERROR DURING LOAD PLY RECORD!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return
+    end
+    if res then
+        ply:SetNWFloat("record",tonumber(res))
+        print("[surf][db] Successfully loaded record time for player "..ply:Nick())
+    end
+end
+
+
+function LuctusDbSavePlyRecord(ply, newtime, oldtime)
+    local res = sql.Query( "DELETE FROM surf_times WHERE map = "..sql.SQLStr(game.GetMap()).." AND sid = "..sql.SQLStr(ply:SteamID()))
+    if res == false then
+        print("[surf][db] ERROR DURING SAVE PLAYER RECORD DELETE OLD!")
+        ErrorNoHaltWithStack(sql.LastError())
+    end
+    res = sql.Query("INSERT INTO surf_times(sid, nick, map, style, time, date) VALUES("..sql.SQLStr(ply:SteamID())..","..sql.SQLStr(ply:Nick())..","..sql.SQLStr(game.GetMap())..",1,"..newtime..",datetime('now'))")
+    if res == false then
+        print("[surf][db] ERROR DURING SAVE PLAYER RECORD ADD NEW!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return
+    end
+    ply:PrintMessage(HUD_PRINTTALK, "You completed the map in a new personal record time!")
+    slower_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE time > "..newtime.." AND map = "..sql.SQLStr(game.GetMap()))
+    all_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE map = "..sql.SQLStr(game.GetMap()))
+    if slower_times_count == false or all_times_count == false then
+        print("[surf][db] ERROR DURING PLACEMENT COUNTING!")
+        ErrorNoHaltWithStack(sql.LastError())
+        return
+    end
+    ply:PrintMessage(HUD_PRINTTALK, "Your time is place "..(1-slower_times_count).."/"..all_times_count.." on this map!")
+end
+
+
 function LuctusDbBanPly(ply,adminId,adminName)
     local res = sql.Query(string.format("INSERT INTO gmod_bans(sid, nick, unbanTime, reason, sidadmin, nickadmin) VALUES(%s,%s,%s,%s,%s,%s)", sql.SQLStr(ply:SteamID()), sql.SQLStr(ply:Nick()), "-1", "'unknown'", sql.SQLStr(adminId), sql.SQLStr(adminName)))
     if res == false then
@@ -108,4 +148,8 @@ function LuctusDbPlaytimeSave(steamid,playtime)
         print("[surf][db] ERROR DURING PLAYTIME SAVE")
         ErrorNoHaltWithStack(sql.LastError())
     end
+end
+
+function LuctusDbAddMapPlay()
+    sql.Query("UPDATE surf_map SET runs = runs + 1 WHERE map = "..sql.SQLStr(game.GetMap()))
 end
