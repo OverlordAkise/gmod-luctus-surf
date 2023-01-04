@@ -24,9 +24,11 @@ surf_usercmds = {
             ply.spectarget = nil
         end
     end,
-    ["spectate"] = surf_usercmds["spec"],
-    ["s"] = surf_usercmds["spec"],
 }
+
+--aliases
+surf_usercmds["spectate"] = surf_usercmds["spec"]
+surf_usercmds["s"] = surf_usercmds["spec"]
 
 hook.Add("PlayerSay","surf_commands",function(ply,text,team)
     if string.StartWith(text,"/") or string.StartWith(text,"!") then
