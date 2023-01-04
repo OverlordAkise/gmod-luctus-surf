@@ -64,8 +64,8 @@ end
 function Timer:Finish( ply, nTime )
     local szMessage = "TimerFinish"
     local nDifference = ply:GetNWFloat( "record", 0 ) > 0 and nTime - ply:GetNWFloat( "record", 0 ) or nil
-    local szSlower = nDifference and (" (" .. (nDifference < 0 and "-" or "+") .. PrettifyTime( math.abs( nDifference ) ) .. ")") or ""
-    PrintMessage(HUD_PRINTTALK, ply:Nick().." completed the map in "..PrettifyTime(nTime).."!")
+    local szSlower = nDifference and (" (" .. (nDifference < 0 and "-" or "+") .. string.ToMinutesSecondsMilliseconds( math.abs( nDifference ) ) .. ")") or ""
+    PrintMessage(HUD_PRINTTALK, ply:Nick().." completed the map in "..string.ToMinutesSecondsMilliseconds(nTime).."!")
     Timer:AddPlay()
     if GiveCredit then
         GiveCredit(ply,1)

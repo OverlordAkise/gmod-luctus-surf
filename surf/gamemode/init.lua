@@ -26,7 +26,7 @@ function GM:Initialize()
 end
 
 hook.Add( "InitPostEntity", "surf_sv_init", function()
-    SQL:InitDB()
+    LuctusDbInit()
     Zones:Setup()
     RunConsoleCommand("sv_airaccelerate","1000")
     RunConsoleCommand("sv_accelerate","10")
@@ -64,7 +64,6 @@ function GM:PlayerCanHearPlayersVoice(listener, talker)
     return true
 end
 function GM:IsSpawnpointSuitable() return true end
-function GM:PlayerDeathThink(ply) end
 
 function GM:PlayerCanPickupWeapon(ply, weapon)
     if ply.WeaponStripped then return false end
@@ -81,6 +80,11 @@ function GM:PlayerUse(ply)
     if ply.isSpectating then return false end
     if ply:GetMoveType() ~= MOVETYPE_WALK then return false end
     return true
+end
+
+function GM:PlayerAuthed( ply, steamid, uniqueid )
+    print("[surf] " .. ply:Name() .. " has been authenticated as " .. steamid .. ". Checking bans...")
+    if LuctusDbIsPlyBanned(steamid) then ply:Kick("You have been banned!") end
 end
 
 print("[luctus_surf] Loaded sv in "..(SysTime()-ss).."s")

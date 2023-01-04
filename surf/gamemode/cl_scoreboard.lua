@@ -96,12 +96,12 @@ function GM:ScoreboardShow()
             draw.DrawText(v:Nick(), "sboardScoreFontSmall", 40, 4, COLOR_WHITE)
             draw.DrawText(string.NiceTime(v:GetNWInt("playtime",0)), "sboardScoreFontSmall", 240, 4, COLOR_WHITE,TEXT_ALIGN_LEFT)
             --draw.DrawText(v:GetNWInt("level",1), "sboardScoreFontSmall", 370, 3, COLOR_WHITE)
-            local ctime = PrettifyTime(v:GetNWFloat("starttime",0) ~= 0 and CurTime() - v:GetNWFloat("starttime",0) or 0)
+            local ctime = string.ToMinutesSecondsMilliseconds(v:GetNWFloat("starttime",0) ~= 0 and CurTime() - v:GetNWFloat("starttime",0) or 0)
             if v:GetNWBool("spectating",false) then
                 ctime = "SPECTATING"
             end
             draw.DrawText(ctime, "sboardScoreFontSmall", 440, 4, COLOR_WHITE)
-            draw.DrawText(PrettifyTime(v:GetNWFloat("record",0)), "sboardScoreFontSmall", 560, 4, COLOR_WHITE)
+            draw.DrawText(string.ToMinutesSecondsMilliseconds(v:GetNWFloat("record",0)), "sboardScoreFontSmall", 560, 4, COLOR_WHITE)
             draw.DrawText(v:Ping(), "sboardScoreFontSmall", 690, 4, COLOR_WHITE)
         end
 

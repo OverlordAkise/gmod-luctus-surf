@@ -25,6 +25,7 @@ function GM:HUDShouldDraw(element)
 end
 
 hook.Add("CreateMove", "surf_auto_jump", function(cmd)
+    if not LocalPlayer():Alive() or LocalPlayer():GetMoveType() ~= MOVETYPE_WALK then return end
     if bit.band( cmd:GetButtons(), IN_JUMP ) ~= 0 then
         if not LocalPlayer():IsOnGround() then
             cmd:SetButtons( bit.band( cmd:GetButtons(), bit.bnot( IN_JUMP ) ) )
@@ -33,11 +34,15 @@ hook.Add("CreateMove", "surf_auto_jump", function(cmd)
 end)
 
 hook.Add("OnSpawnMenuOpen","surf_reset_shortcut",function()
-    RunConsoleCommand("say","!r")
+    RunConsoleCommand("say","!restart")
 end)
 
 cvars.AddChangeCallback("ls_crosshair", function(cvar, prev, new)
-    HUDItems["CHudCrosshair"] = not CCrosshair:GetBool()
+    if new == "0" then
+        HUDItems["CHudCrosshair"] = true
+    else
+        HUDItems["CHudCrosshair"] = false
+    end
 end)
 
 function PlayerVisibility(nTarget)
@@ -105,7 +110,7 @@ hook.Add( "InitPostEntity", "surf_cl_init", function()
     hook.Remove("PlayerTick", "TickWidgets")
     hook.Remove("PreDrawHalos", "PropertiesHover")
     
-    HUDItems["CHudCrosshair"] = CCrosshair:GetBool()
+    HUDItems["CHudCrosshair"] = false
 end)
 
 print("[luctus_surf] Loaded cl in "..(SysTime()-ss).."s")

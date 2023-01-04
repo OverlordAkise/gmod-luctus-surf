@@ -112,96 +112,126 @@ concommand.Add("lsa",function(ply,cmd,args,argStr)
     PrintTable(args)
 end)
 
-hook.Add("PlayerSay","surf_admincommands",function(ply,text,team)
-    if ply:IsAdmin() then
-        local cmd = string.Split(text," ")[1]
-        local firstArg = string.Split(text," ")[2]
-        local secondArg = string.Split(text," ")[3]
-        local thirdArg = string.Split(text," ")[4]
-        local target = firstArg and getPlyByName(firstArg) or nil
-
-        if cmd == "!kick" then
-            if target then
-                target:Kick("You have been kicked!")
-            else
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Can't find target player!")
-            end
+surf_admincmds = {
+    ["zonegun"] = function(ply)
+        ply:Give("weapon_crowbar")
+        ply:Give("zone_gun")
+        return ""
+    end,
+    ["frtv"] = function()
+        SurfRtvStart()
+        return ""
+    end,
+    ["resethighscore"] = function(ply,args)
+        if not args or not string.find(args,"STEAM_%d:%d:%d+") then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !resethighscore <steamid>")
+            return ""
+        end
+        LuctusDbResetHighscore(args)
+        local target = player.GetBySteamID(args)
+        target:SetNWFloat( "record", 0 )
+        PrintMessage(HUD_PRINTTALK, "[admin] High Score of "..args.." successfully deleted!")
+    end,
+    ["kick"] = function(ply,args)
+        local tply, reason = LuctusFindPlyByName(string.lower(args))
+        if not tply or not IsValid(tply) then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
             return
         end
-        
-        if cmd == "!frtv" then
-            SurfRtvStart()
+        tply:Kick("You have been kicked!")
+    end,
+    ["mute"] = function(ply,args)
+        local tply, reason = LuctusFindPlyByName(string.lower(args))
+        if not tply or not IsValid(tply) then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            return
         end
-        
-        if cmd == "!mute" then
-            if target then
-                target.ismuted = true
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is now muted for everyone!")
-            end
+        tplytarget.ismuted = true
+        ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is now muted for everyone!")
+    end,
+    ["unmute"] = function(ply,args)
+        local tply, reason = LuctusFindPlyByName(string.lower(args))
+        if not tply or not IsValid(tply) then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            return
         end
-        
-        if cmd == "!unmute" then
-            if target then
-                target.ismuted = false
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is now unmuted for everyone!")
-            end
+        tplytarget.ismuted = false
+        ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is not muted anymore!")
+    end,
+    ["banply"] = function(adminPly,args)
+        local tply, reason = LuctusFindPlyByName(string.lower(args))
+        if not tply or not IsValid(tply) then
+            adminPly:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            return ""
         end
-
-        if cmd == "!maprestart" then
-            PrintMessage(HUD_PRINTTALK, "[admin] Map will be restarted in 10 seconds!")
+        LuctusDbBanPly(tply,adminPly:SteamID(),adminPly:Nick())
+    end,
+    ["bansid"] = function(adminPly,args)
+        if not args or not string.find(args,"STEAM_%d:%d:%d+") then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !bansid <steamid>")
+            return ""
+        end
+        LuctusDbBanSteamid(args)
+    end,
+    ["unban"] = function(ply,args)
+        if not args or not string.find(args,"STEAM_%d:%d:%d+") then
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !unban <steamid>")
+            return ""
+        end
+        LuctusDbUnban(args)
+    end,
+    ["maprestart"] = function()
+        PrintMessage(HUD_PRINTTALK, "[admin] Map will be restarted in 10 seconds!")
+        timer.Simple(10,function()
+            RunConsoleCommand("changelevel", game.GetMap())
+        end)
+    end,
+    ["map"] = function(ply,args)
+        if file.Exists("maps/"..args..".bsp","GAME") then
+            PrintMessage(HUD_PRINTTALK, "[admin] Map will be changed to "..args.." in 10 seconds!")
             timer.Simple(10,function()
-                RunConsoleCommand("changelevel", game.GetMap())
+                RunConsoleCommand("changelevel", args)
             end)
-            return
+        else
+            ply:PrintMessage(HUD_PRINTTALK, "[admin] This map doesn't exist on this server!")
         end
-
-        if cmd == "!map" then
-            if firstArg then
-                if file.Exists("maps/"..firstArg..".bsp","GAME") then
-                    PrintMessage(HUD_PRINTTALK, "[admin] Map will be changed to "..firstArg.." in 10 seconds!")
-                    timer.Simple(10,function()
-                        RunConsoleCommand("changelevel", firstArg)
-                    end)
-                else
-                    ply:PrintMessage(HUD_PRINTTALK, "[admin] This map doesn't exist on this server!")
-                end
-                return
-            else
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !map <mapname>")
-                return ""
+    end,
+    ["kill"] = function(admin,args)
+        for k,v in pairs(player.GetAll()) do
+            if v:Nick() == args then
+                v:Kill()
             end
         end
+    end,
+}
 
-        if cmd == "!ban" then
-            if target then
-                target:Ban(tonumber(secondArg) or 0,true)
-                PrintMessage(HUD_PRINTTALK, "[admin] "..target:Nick().." has been banned for "..(tonumber(secondArg) or "infinite").." minutes!")
-            else
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Can't find target player!")
-                return ""
+function LuctusFindPlyByName(name)
+    local ret = nil
+    for k,v in pairs(player.GetAll()) do
+        if string.find(string.lower(v:Nick()),name) then
+            if ret ~= nil then
+                return nil, "Too many players found!"
             end
+            ret = v
         end
+    end
+    if ret == nil then
+        return nil, "No players found!"
+    end
+    return ret, ""
+end
 
-        if cmd == "!banid" then
-            if firstArg then
-                --local res = sql.Query("INSERT INTO gmod_bans (sid, nick, reason, sidadmin, nickadmin) VALUES("..sql.SQLStr(firstArg)..",UNKNOWN,"..(thirdArg and sql.SQLStr(thirdArg) or "''")..",
-                PrintMessage(HUD_PRINTTALK, "[admin] "..firstArg.." has been banned for "..(tonumber(secondArg) or "infinite").." minutes!")
-            else
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !banid <steamid> <time in minutes>")
-                return ""
-            end
-
+hook.Add("PlayerSay","surf_admincommands",function(ply,text,team)
+    if not ply:IsAdmin() then return end
+    if string.StartWith(text,"/") or string.StartWith(text,"!") then
+        local cmd = string.Right(text,string.len(text)-1)
+        local argStr = cmd
+        if string.find(cmd," ") then
+            cmd = string.Split(argStr," ")[1]
+            argStr = string.Split(text,cmd.." ")[2]
         end
-
-        if cmd == "!unban" then
-            if firstArg then
-                RunConsoleCommand("removeid", firstArg)
-                RunConsoleCommand("writeid")
-                PrintMessage(HUD_PRINTTALK, "[admin] "..firstArg.." has been unbanned!")
-            else
-                ply:PrintMessage(HUD_PRINTTALK, "[admin] Please provide a valid steamid!")
-                return ""
-            end
+        if surf_admincmds[cmd] then
+            return surf_admincmds[cmd](ply,argStr)
         end
     end
 end)
