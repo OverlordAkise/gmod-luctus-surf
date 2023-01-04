@@ -12,6 +12,7 @@ include("sv_admin.lua")
 include("sv_rtv.lua")
 include("sv_spectate.lua")
 include("sv_playtime.lua")
+include("sv_chatsounds.lua")
 
 AddCSLuaFile("sh_hook.lua")
 AddCSLuaFile("shared.lua")
@@ -25,7 +26,6 @@ function GM:Initialize()
     --im stuff
 end
 
---[[
 util.AddNetworkString("surf_notify")
 function SurfNotify(ply,tag,text,isChat,sound)
     print("[surf][notify]",tag,text,ply)
@@ -40,7 +40,6 @@ function SurfNotify(ply,tag,text,isChat,sound)
         net.Broadcast()
     end
 end
---]]
 
 hook.Add( "InitPostEntity", "surf_sv_init", function()
     LuctusDbInit()

@@ -67,6 +67,7 @@ function SurfRtvStart()
     timer.Create("surf_rtv_end",LUCTUS_SURF_RTV_VOTE_DURATION,1,function()
         SurfRtvEnd()
     end)
+    SurfNotify(nil,"[rtv]","A vote has started!",true,"combined/k_lab/k_lab_al_moveon01_cc.wav")
 end
 
 net.Receive("surf_rtvmaps", function(len,ply)

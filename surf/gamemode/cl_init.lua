@@ -8,27 +8,10 @@ include("cl_scoreboard.lua")
 include("cl_rtv.lua")
 include("cl_spectate.lua")
 
---[[
-local chatcolors = {
-    ["[zones]"] = Color(255,255,0),
-}
-local color_red = Color(255,0,0)
-
-net.Receive("surf_notify",function()
-    local tag = net.ReadString()
-    local text = net.ReadString()
-    local isChat = net.ReadBool()
-    local soundStr = net.ReadString()
-    if isChat then
-        local color = chatcolors[tag]
-        chat.AddText(color, tag, color_white, " ", text)
-    else
-        notification.AddLegacy(tag.." "..text, NOTIFY_GENERIC, 5)
-    end
-end)
---]]
 
 local CPlayers = CreateClientConVar("ls_showothers", "1", true, false)
+local CChatVolume = CreateClientConVar("ls_chatvolume", "1", true, false)
+local CSoundMuted = CreateClientConVar("ls_mutesounds", "0", true, false)
 local CCrosshair = CreateClientConVar("ls_crosshair", "1", true, false)
 local CTargetID = CreateClientConVar("ls_targetids", "0", true, false)
 
@@ -43,6 +26,29 @@ local HUDItems = {
 function GM:HUDShouldDraw(element)
     return not HUDItems[element]
 end
+
+
+local chatcolors = {
+    ["[zones]"] = Color(255,255,0),
+}
+local color_red = Color(255,0,0)
+
+net.Receive("surf_notify",function()
+    local tag = net.ReadString()
+    local text = net.ReadString()
+    local isChat = net.ReadBool()
+    local soundStr = net.ReadString()
+    if not isChat then
+        notification.AddLegacy(tag.." "..text, NOTIFY_GENERIC, 5)
+    else
+        local color = chatcolors[tag]
+        if not color then color = LUCTUS_SURF_COL_ACCENT end
+        chat.AddText(color, tag, color_white, " ", text)
+    end
+    if CSoundMuted:GetBool() then return end
+    if not soundStr or soundStr == "" then return end
+    surface.PlaySound(soundStr)
+end)
 
 hook.Add("CreateMove", "surf_auto_jump", function(cmd)
     if not LocalPlayer():Alive() or LocalPlayer():GetMoveType() ~= MOVETYPE_WALK then return end
@@ -125,6 +131,16 @@ hook.Add( "InitPostEntity", "surf_cl_init", function()
     hook.Remove("PreDrawHalos", "PropertiesHover")
     
     HUDItems["CHudCrosshair"] = false
+end)
+
+net.Receive("surf_chatsound",function()
+    local soundURL = net.ReadString()
+    print(soundURL,CChatVolume:GetFloat())
+    sound.PlayURL(soundURL,"",function(s)
+        if not s then return end
+        s:SetVolume(CChatVolume:GetFloat())
+        s:Play()
+    end)
 end)
 
 print("[luctus_surf] Loaded cl in "..(SysTime()-ss).."s")
