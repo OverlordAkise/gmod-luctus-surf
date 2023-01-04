@@ -1,51 +1,40 @@
-local PLAYER = FindMetaTable( "Player" )
 
-Timer = {}
-
-function PLAYER:IsSurfing()
-    if self.isTraining then return false end
-    if self.spectating then return false end
+function LuctusTimerCanPlySurf()
+    if ply.spectating then return false end
     return true
 end
 
-function PLAYER:SpawnAtSpawn()
-    local plyAng = self:EyeAngles()
+function SpawnPlyAtStart(ply)
+    local plyAng = ply:EyeAngles()
     plyAng.r = 0--fix surf_mesa bug
-    self:SetEyeAngles(plyAng)
+    ply:SetEyeAngles(plyAng)
     if Zones.StartPoint then
-        self:SetPos(Zones:GetSpawnPoint(Zones.StartPoint))
+        ply:SetPos(LuctusZonesGetSpawnpoint(Zones.StartPoint))
     end
-    if self:GetMoveType() != MOVETYPE_WALK then
-        self:SetMoveType(MOVETYPE_WALK)
+    if ply:GetMoveType() != MOVETYPE_WALK then
+        ply:SetMoveType(MOVETYPE_WALK)
     end
 end
 
-function PLAYER:StartTimer()
-    if not self:IsSurfing() then return end
-    local vel2d = self:GetVelocity():Length2D()
+function LuctusTimerStart(ply)
+    if not LuctusTimerCanPlySurf(ply) then return end
+    local vel2d = ply:GetVelocity():Length2D()
     if vel2d > LUCTUS_SURF_MAX_START_VEL then
-        self:SetLocalVelocity(Vector(0, 0, 0))
-        self:SpawnAtSpawn()
-        self:PrintMessage(HUD_PRINTTALK, "[surf] You can't leave the zone with "..math.ceil( vel2d ).." u/s")
+        ply:SetLocalVelocity(Vector(0, 0, 0))
+        SpawnPlyAtStart(ply)
+        ply:PrintMessage(HUD_PRINTTALK, "[surf] You can't leave the zone with "..math.ceil( vel2d ).." u/s")
     end
-    self:SetNWFloat("starttime",CurTime())
+    ply:SetNWFloat("starttime",CurTime())
 end
 
-function PLAYER:ResetTimer()
-    self:SetNWFloat("starttime",0)
+function LuctusTimerStop(ply)
+    ply:SetNWFloat("starttime",0)
 end
 
-function PLAYER:StopTimer()
-    if not self:IsSurfing() then return end
-    Timer:Finish( self, CurTime() - self:GetNWFloat("starttime",0))
-    self:SetNWFloat("starttime",0)
-end
-
-function PLAYER:KillTimer()
-    self:SetNWFloat("starttime",0)
-end
-
-function Timer:Finish( ply, nTime )
+function LuctusTimerFinish(ply)
+    if not LuctusTimerCanPlySurf(ply) then return end
+    local nTime = CurTime() - ply:GetNWFloat("starttime",0)
+    
     local szMessage = "TimerFinish"
     local nDifference = ply:GetNWFloat( "record", 0 ) > 0 and nTime - ply:GetNWFloat( "record", 0 ) or nil
     local szSlower = nDifference and (" (" .. (nDifference < 0 and "-" or "+") .. string.ToMinutesSecondsMilliseconds( math.abs( nDifference ) ) .. ")") or ""
@@ -55,6 +44,7 @@ function Timer:Finish( ply, nTime )
         GiveCredit(ply,1)
     end
     local oldRecord = ply:GetNWFloat( "record", 0 )
+    ply:SetNWFloat("starttime",0)
     if oldRecord ~= 0 and nTime >= oldRecord then return end
     
     ply:SetNWFloat( "record", nTime )

@@ -25,9 +25,26 @@ function GM:Initialize()
     --im stuff
 end
 
+--[[
+util.AddNetworkString("surf_notify")
+function SurfNotify(ply,tag,text,isChat,sound)
+    print("[surf][notify]",tag,text,ply)
+    net.Start("surf_notify")
+        net.WriteString(tag)
+        net.WriteString(text)
+        net.WriteBool(isChat and true or false)
+        net.WriteString(sound and sound or "")
+    if IsValid(ply) then
+        net.Send(ply)
+    else
+        net.Broadcast()
+    end
+end
+--]]
+
 hook.Add( "InitPostEntity", "surf_sv_init", function()
     LuctusDbInit()
-    Zones:Setup()
+    LuctusZonesSetup()
     RunConsoleCommand("sv_airaccelerate","1000")
     RunConsoleCommand("sv_accelerate","10")
     RunConsoleCommand("sv_friction","8")
@@ -46,9 +63,9 @@ function GM:PlayerSpawn(ply)
     ply:SetModel("models/player/group01/male_01.mdl")
     ply:SetNoCollideWithTeammates(true)
     ply:SetAvoidPlayers(false)
-    ply:ResetTimer()
+    LuctusTimerStop(ply)
     ply:SetMoveType(MOVETYPE_WALK)
-    ply:SpawnAtSpawn()
+    SpawnPlyAtStart(ply)
     ply:Give("hands")
 end
 

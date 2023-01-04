@@ -13,7 +13,7 @@ Zones.StartPoint = nil
 Zones.Cache = {}
 Zones.Entities = {}
 
-function Zones:Setup()
+function LuctusZonesSetup()
     local zones = sql.Query( "SELECT type, posone, postwo FROM surf_zones WHERE map = "..sql.SQLStr(game.GetMap()))
     if zones == false then
         print("[surf][db] ERROR DURING LOADZONES SQL")
@@ -52,7 +52,7 @@ function Zones:Setup()
     end
 end
 
-function Zones:Reload()
+function LuctusZonesReload()
     for _,zone in pairs( Zones.Entities ) do
         if IsValid( zone ) then
             zone:Remove()
@@ -62,10 +62,10 @@ function Zones:Reload()
     
     Zones.Entities = {}
     
-    Zones:Setup()
+    LuctusZonesSetup()
 end
 
-function Zones:GetSpawnPoint( data )
+function LuctusZonesGetSpawnpoint(data)
     local vx, vy, vz = 8, 8, 0
     local dx, dy, dz = data[ 2 ].x - data[ 1 ].x, data[ 2 ].y - data[ 1 ].y, data[ 2 ].z - data[ 1 ].z
     
@@ -86,8 +86,8 @@ net.Receive("surf_setzone",function(len,ply)
     if ply:GetActiveWeapon():GetClass() ~= "zone_gun" then return end
     local action = net.ReadInt(4) --action = zonetype, if -1 = reload zones
     if action == -1 then
-        Zones:Reload()
-        ply:PrintMessage(HUD_PRINTTALK, "[zones] Reloaded zones!")
+        LuctusZonesReload()
+        ply:PrintMessage(HUD_PRINTTALK, "[zones] Zones reloaded!")
         return
     end
     local zones = ply:GetActiveWeapon().Zone
@@ -106,10 +106,10 @@ net.Receive("surf_setzone",function(len,ply)
         local success = LuctusDbInsertZone(action, zones.First, zone.Second)
         if success then
             print("[surf][zones] New Zone for map "..game.GetMap().." (type "..action..") successfully inserted!")
-            ply:PrintMessage(HUD_PRINTTALK, "[surfDB] Successfully saved new zone!")
+            ply:PrintMessage(HUD_PRINTTALK, "[zones] Successfully saved new zone!")
         else
             print("[surf][zones] Error: New Zone for map "..game.GetMap().." (type "..action..") not saved!")
-            ply:PrintMessage(HUD_PRINTTALK, "[surfDB] Error during saving!!")
+            ply:PrintMessage(HUD_PRINTTALK, "[zones] Error during saving!!")
         end
     end
 end)

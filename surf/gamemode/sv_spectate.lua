@@ -9,7 +9,7 @@ hook.Add("PlayerSay","surf_spectate_chat",function(ply,text,team)
         if ply.spectating == nil then ply.spectating = false end
         ply.spectating = not ply.spectating
         if ply.spectating then
-            ply:ResetTimer()
+            LuctusTimerStop(ply)
             --start spectating
             ply.specmode = OBS_MODE_ROAMING
             ply:Spectate(ply.specmode)

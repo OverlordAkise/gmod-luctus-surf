@@ -8,6 +8,26 @@ include("cl_scoreboard.lua")
 include("cl_rtv.lua")
 include("cl_spectate.lua")
 
+--[[
+local chatcolors = {
+    ["[zones]"] = Color(255,255,0),
+}
+local color_red = Color(255,0,0)
+
+net.Receive("surf_notify",function()
+    local tag = net.ReadString()
+    local text = net.ReadString()
+    local isChat = net.ReadBool()
+    local soundStr = net.ReadString()
+    if isChat then
+        local color = chatcolors[tag]
+        chat.AddText(color, tag, color_white, " ", text)
+    else
+        notification.AddLegacy(tag.." "..text, NOTIFY_GENERIC, 5)
+    end
+end)
+--]]
+
 local CPlayers = CreateClientConVar("ls_showothers", "1", true, false)
 local CCrosshair = CreateClientConVar("ls_crosshair", "1", true, false)
 local CTargetID = CreateClientConVar("ls_targetids", "0", true, false)

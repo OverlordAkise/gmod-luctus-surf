@@ -1,7 +1,7 @@
 surf_usercmds = {
     ["restart"] = function(ply,args)
         ply:SetLocalVelocity(Vector(0,0,0))
-        ply:SpawnAtSpawn()
+        SpawnPlyAtStart(ply)
         return ""
     end,
 }
