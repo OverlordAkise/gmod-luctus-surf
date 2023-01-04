@@ -4,38 +4,6 @@ hook.Add("PlayerInitialSpawn","surf_keys_init",function(ply)
     if not spectatorKeys[ply] then spectatorKeys[ply] = 0 end
 end)
 
-hook.Add("PlayerSay","surf_spectate_chat",function(ply,text,team)
-    if text == "!spec" or spec == "!spectate" then
-        if ply.spectating == nil then ply.spectating = false end
-        ply.spectating = not ply.spectating
-        if ply.spectating then
-            LuctusTimerStop(ply)
-            --start spectating
-            ply.specmode = OBS_MODE_ROAMING
-            ply:Spectate(ply.specmode)
-            for k,v in pairs(player.GetAll()) do
-                if v ~= ply then
-                    ply:SpectateEntity(v)
-                    spectatorKeys[v] = spectatorKeys[v]+1
-                end
-            end
-            ply:StripWeapons()
-            ply:SetNWBool("spectating",true)
-        else
-            --stop spectating
-            ply:UnSpectate()
-            ply:Spawn()
-            ply:SetNWBool("spectating",false)
-            if IsValid(player.GetAll()[ply.spectarget]) then
-                spectatorKeys[player.GetAll()[ply.spectarget]] = math.max(spectatorKeys[player.GetAll()[ply.spectarget]]-1,0)
-            end
-            ply.spectarget = nil
-            ply.specmode = nil
-        end
-        return ""
-    end
-end)
-
 local specmodes = {
     OBS_MODE_IN_EYE,
     OBS_MODE_CHASE,
@@ -51,7 +19,6 @@ hook.Add( "KeyPress", "surf_spectate_modes", function( ply, key )
             ply:Spectate(specmodes[ply.specmode+1])
         end
         local PlusOrMinus = 0
-        PrintMessage(3,ply.spectarget)
         if (key == IN_ATTACK) then
             PlusOrMinus = PlusOrMinus + 1
         end
@@ -70,7 +37,6 @@ hook.Add( "KeyPress", "surf_spectate_modes", function( ply, key )
             ply:SpectateEntity(allPly[ply.spectarget+1])
             spectatorKeys[allPly[ply.spectarget+1]] = spectatorKeys[allPly[ply.spectarget+1]]+1
         end
-        PrintMessage(3,ply.spectarget)
     end
 
     --Spectator Key Sync Display

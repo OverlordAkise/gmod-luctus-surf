@@ -71,6 +71,7 @@ end
 
 function GM:PlayerInitialSpawn(ply)
     LuctusDbLoadPlyRecord(ply)
+    ply.spectating = false
 end
 
 function GM:CanPlayerSuicide() return true end

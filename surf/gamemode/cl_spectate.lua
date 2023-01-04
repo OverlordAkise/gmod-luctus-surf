@@ -22,6 +22,8 @@ timer.Create("luctus_surf_spectate_time",1,0,function()
             table.insert(spectators,v:Nick())
         end
     end
+    --fix zonegun bug
+    if LocalPlayer():GetNWBool("spectating",false) then hook.Remove("PostDrawOpaqueRenderables","surf_zone_display") end
 end)
 
 hook.Add("HUDPaint","surf_spectate_hud",function()
