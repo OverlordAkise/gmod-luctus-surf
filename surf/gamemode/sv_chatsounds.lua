@@ -7,6 +7,7 @@ surf_chatsounds = {
 }
 
 concommand.Add("lsas", function(ply,cmd,args,argStr)
+    if IsValid(ply) and not ply:IsAdmin() then return end
     local chatStr = args[1]
     local url = args[2]
     surf_chatsounds[chatStr] = url
