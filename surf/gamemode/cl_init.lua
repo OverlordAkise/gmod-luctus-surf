@@ -135,7 +135,6 @@ end)
 
 net.Receive("surf_chatsound",function()
     local soundURL = net.ReadString()
-    print(soundURL,CChatVolume:GetFloat())
     sound.PlayURL(soundURL,"",function(s)
         if not s then return end
         s:SetVolume(CChatVolume:GetFloat())
