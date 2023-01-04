@@ -10,6 +10,7 @@ local rtvStartY = 20
 local rtvtime = 0
 local localtime = 0
 local mapname = ""
+local spectators = {}
 
 timer.Create("luctus_surf_rtv_time",1,0,function()
     mapname = game.GetMap()

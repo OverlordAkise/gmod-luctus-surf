@@ -14,6 +14,16 @@ local colblack = Color(0,0,0)
 local colwhite = Color(255,255,255,255)
 local coldarkened = Color(255,255,255,80)
 
+local spectators = {}
+timer.Create("luctus_surf_spectate_time",1,0,function()
+    spectators = {}
+    for k,v in pairs(player.GetAll()) do
+        if v:GetObserverTarget() == lp then
+            table.insert(spectators,v:Nick())
+        end
+    end
+end)
+
 hook.Add("HUDPaint","surf_spectate_hud",function()
     if not lp then lp = LocalPlayer() end
     local scrw = ScrW()
@@ -41,11 +51,10 @@ hook.Add("HUDPaint","surf_spectate_hud",function()
         end
     end
     if not ViewSpec:GetBool() then return end
+    if #spectators <= 0 then return end
     draw.SimpleTextOutlined("-Spectators-", "Trebuchet18",scrw-10, scrh/2, colwhite, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 0.5, colblack)
-    for k,v in pairs(player.GetAll()) do
-        if v:GetObserverTarget() == lp then
-            draw.SimpleTextOutlined(v:Nick(), "Trebuchet18",scrw-10, scrh/2+k*15, colwhite, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 0.5, colblack)
-        end
+    for k,v in pairs(spectators) do
+        draw.SimpleTextOutlined(v, "Trebuchet18",scrw-10, scrh/2+k*15, colwhite, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP, 0.5, colblack)
     end
 end)
 
