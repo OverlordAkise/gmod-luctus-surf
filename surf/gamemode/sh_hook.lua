@@ -1,4 +1,8 @@
-if hook.GetULibTable then return end	-- Prevent autorefresh reloading this file
+--ULIB'S HOOK LIBRARY
+--MADE BY ULYSSES AND BORROWED FOR PERFORMANCE
+--https://github.com/TeamUlysses/ulib/blob/master/lua/ulib/shared/hook.lua
+
+if hook.GetULibTable then return end
 
 local gmod			= gmod
 local pairs			= pairs
@@ -14,23 +18,16 @@ HOOK_NORMAL = 0
 HOOK_LOW = 1
 HOOK_MONITOR_LOW = 2
 
--- Grab all previous hooks from the pre-existing hook module.
 local OldHooks = hook.GetTable()
 
 module( "hook" )
 
 local Hooks = {}
-local BackwardsHooks = {} -- A table fully to garry's spec for aVoN
+local BackwardsHooks = {}
 
---
--- For access to the Hooks table.. for some reason.
---
 function GetTable() return BackwardsHooks end
 function GetULibTable() return Hooks end
 
---
--- Add a hook
---
 function Add( event_name, name, func, priority )
 	priority = priority or 0
 	if ( !isfunction( func ) ) then return end
@@ -50,13 +47,8 @@ function Add( event_name, name, func, priority )
 
 	Hooks[ event_name ][ priority ][ name ] = { fn=func, isstring=isstring( name ) }
 	BackwardsHooks[ event_name ][ name ] = func -- Keep the classic style too so we won't break anything
-
 end
 
-
---
--- Remove a hook
---
 function Remove( event_name, name )
 
 	if ( !isstring( event_name ) ) then return end
@@ -70,21 +62,12 @@ function Remove( event_name, name )
 
 end
 
---
--- Run a hook (this replaces Call)
---
 function Run( name, ... )
 	return Call( name, gmod and gmod.GetGamemode() or nil, ... )
 end
 
---
--- Called by the engine
---
 function Call( name, gm, ... )
 
-	--
-	-- Run hooks
-	--
 	local HookTable = Hooks[ name ]
 	if ( HookTable != nil ) then
 
@@ -104,32 +87,18 @@ function Call( name, gm, ... )
 
 				else
 
-					--
-					-- If the key isn't a string - we assume it to be an entity
-					-- Or panel, or something else that IsValid works on.
-					--
 					if ( IsValid( k ) ) then
-						--
-						-- If the object is valid - pass it as the first argument (self)
-						--
 						local a, b, c, d, e, f = v.fn( k, ... )
 						if ( a != nil && i > -2 && i < 2 ) then
 							return a, b, c, d, e, f
 						end
 					else
-						--
-						-- If the object has become invalid - remove it
-						--
 						HookTable[ i ][ k ] = nil
 					end
 				end
 			end
 		end
 	end
-
-	--
-	-- Call the gamemode function
-	--
 	if ( !gm ) then return end
 
 	local GamemodeFunction = gm[ name ]
@@ -139,7 +108,6 @@ function Call( name, gm, ... )
 
 end
 
--- Bring in all the old hooks
 for event_name, t in pairs( OldHooks ) do
 	for name, func in pairs( t ) do
 		Add( event_name, name, func )
