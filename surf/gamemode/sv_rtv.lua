@@ -8,6 +8,7 @@ rtv_allowed = false
 
 function SurfRtvCheck()
     local rtvCount = 0
+    local plyAll = player.GetAll()
     for k,v in pairs(plyAll) do
         if ply.rtvd then
             rtvCount = rtvCount + 1
