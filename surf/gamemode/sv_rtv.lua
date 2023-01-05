@@ -128,6 +128,7 @@ function SurfRtvEnd()
     if highestMap ~= game.GetMap() then
         PrintMessage(HUD_PRINTTALK, "[rtv] Next map is "..highestMap.."!")
         PrintMessage(HUD_PRINTTALK, "[rtv] Changing level in "..LUCTUS_SURF_RTV_MAPCHANGE_DELAY.." seconds!")
+        SetGlobal2Int("rtv_autotime",CurTime()+LUCTUS_SURF_RTV_MAPCHANGE_DELAY)
         net.Start("surf_rtvmaps")
             net.WriteBool(true)
         net.Broadcast()
@@ -135,9 +136,9 @@ function SurfRtvEnd()
             RunConsoleCommand("changelevel",highestMap)
         end)
     else
-        PrintMessage(HUD_PRINTTALK, "[rtv] The map will be extended by 30min!")
-        timer.Create("surf_rtv_auto_timer",1800,1,function() SurfRtvStart() end)
-        SetGlobal2Int("rtv_autotime",CurTime()+1800)
+        PrintMessage(HUD_PRINTTALK, "[rtv] The map will be extended by "..(LUCTUS_SURF_RTV_AUTO_TIME/60).."min!")
+        timer.Create("surf_rtv_auto_timer",LUCTUS_SURF_RTV_AUTO_TIME,1,function() SurfRtvStart() end)
+        SetGlobal2Int("rtv_autotime",CurTime()+LUCTUS_SURF_RTV_AUTO_TIME)
         --CleanUp
         for k,v in pairs(rtv_selectedMaps) do
             SetGlobal2Int(k,0)
