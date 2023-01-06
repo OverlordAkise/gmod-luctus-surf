@@ -15,7 +15,7 @@ function SurfRtvCheck()
         end
     end
     
-    if #plyAll == 1 then SurfRtvStart() end
+    if #plyAll == 1 and rtvCount == 1 then SurfRtvStart() end
     
     if #plyAll == 2 and rtvCount ~= 2 then return end
     
