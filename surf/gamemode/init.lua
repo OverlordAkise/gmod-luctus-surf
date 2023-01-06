@@ -44,8 +44,8 @@ end
 hook.Add( "InitPostEntity", "surf_sv_init", function()
     LuctusDbInit()
     LuctusZonesSetup()
-    RunConsoleCommand("sv_airaccelerate","0")--1000?
-    RunConsoleCommand("sv_accelerate","5")--5?
+    RunConsoleCommand("sv_airaccelerate","1000")--0?
+    RunConsoleCommand("sv_accelerate","10")--5?
     RunConsoleCommand("sv_friction","4")--8?
     RunConsoleCommand("sv_sticktoground","0")
     RunConsoleCommand("sv_maxvelocity", "9000")--3500?
