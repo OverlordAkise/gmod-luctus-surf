@@ -42,7 +42,7 @@ function GM:HUDPaintBackground()
     draw.SimpleText( string.ToMinutesSecondsMilliseconds( nCurrent ), "Trebuchet24", Xo + 64 + 12, scrh - Yo + 20, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
     draw.SimpleText( string.ToMinutesSecondsMilliseconds( lpc:GetNWFloat("record",0) ), "Trebuchet24", Xo + 64 + 12, scrh - Yo + 45, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER )
 
-    local cp = cl( nSpeed, 0, 5000 ) / 5000
+    local cp = cl( nSpeed, 0, 3500 ) / 3500
     surface.SetDrawColor(LUCTUS_SURF_COL_ACCENT)
     surface.DrawRect(Xo + 5, scrh - Yo + 65, cp * 220, 25)
 
