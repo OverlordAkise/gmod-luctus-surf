@@ -21,6 +21,7 @@ AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("cl_rtv.lua")
 AddCSLuaFile("cl_spectate.lua")
+AddCSLuaFile("cl_gui.lua")
 
 function GM:Initialize()
     --im stuff
@@ -71,6 +72,10 @@ end
 function GM:PlayerInitialSpawn(ply)
     LuctusDbLoadPlyRecord(ply)
     ply.spectating = false
+    timer.Simple(10,function()
+        if not IsValid(ply) then return end
+        SurfNotify(ply,"[cfg]","You can change your settings with !cfg",true,"")
+    end)
 end
 
 function GM:CanPlayerSuicide() return true end

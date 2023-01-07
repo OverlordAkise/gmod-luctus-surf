@@ -7,6 +7,7 @@ include("cl_hud.lua")
 include("cl_scoreboard.lua")
 include("cl_rtv.lua")
 include("cl_spectate.lua")
+include("cl_gui.lua")
 
 
 local CPlayers = CreateClientConVar("ls_showothers", "1", true, false)

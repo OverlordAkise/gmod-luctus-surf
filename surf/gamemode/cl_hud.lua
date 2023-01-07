@@ -1,9 +1,13 @@
 local fo, cl = string.format, math.Clamp
 
+local CCrossSpeed = CreateClientConVar("ls_crossspeed", "0", true, false)
+
+
 
 local Xo = 20
 local Yo = 115
 local color_white = Color(255,255,255)
+local color_black = Color(0,0,0)
 local rtvStartX = ScrW()-300
 local rtvStartY = 20
     
@@ -47,6 +51,9 @@ function GM:HUDPaintBackground()
     surface.DrawRect(Xo + 5, scrh - Yo + 65, cp * 220, 25)
 
     draw.SimpleText( fo( "%.0f u/s", nSpeed ), "Trebuchet24", Xo + 115, scrh - Yo + 77, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+    if CCrossSpeed:GetBool() then
+        draw.SimpleTextOutlined(fo( "%.0f", nSpeed ), "DermaLarge",ScrW()/2, scrh/2+50, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, color_black)
+    end
     
     --Info
     surface.SetDrawColor( LUCTUS_SURF_COL_BG )
