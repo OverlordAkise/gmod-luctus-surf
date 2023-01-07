@@ -1,6 +1,6 @@
 
 hook.Add("OnPlayerChat","surf_cl_cmds",function(ply,text,team,dead)
-    if not ply == LocalPlayer() then return end
+    if ply ~= LocalPlayer() then return end
     if text == "!cfg" or text == "!settings" then
         SurfOpenSettings()
     end
