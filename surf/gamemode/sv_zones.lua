@@ -87,12 +87,12 @@ net.Receive("surf_setzone",function(len,ply)
     local action = net.ReadInt(4) --action = zonetype, if -1 = reload zones
     if action == -1 then
         LuctusZonesReload()
-        ply:PrintMessage(HUD_PRINTTALK, "[zones] Zones reloaded!")
+        SurfNotify(ply,"[zones]","Zones reloaded!")
         return
     end
     local zones = ply:GetActiveWeapon().Zone
     if not zones.First or not zones.Second then
-        ply:PrintMessage(HUD_PRINTTALK, "[zones] Error: First or Second zone point missing!")
+        SurfNotify(ply,"[zones]","Error: First or Second zone point missing!")
         return
     end
     zones.First = zones.First
@@ -106,10 +106,10 @@ net.Receive("surf_setzone",function(len,ply)
         local success = LuctusDbInsertZone(action, zones.First, zones.Second)
         if success then
             print("[surf][zones] New Zone for map "..game.GetMap().." (type "..action..") successfully inserted!")
-            ply:PrintMessage(HUD_PRINTTALK, "[zones] Successfully saved new zone!")
+            SurfNotify(ply,"[zones]","Successfully saved new zone!")
         else
             print("[surf][zones] Error: New Zone for map "..game.GetMap().." (type "..action..") not saved!")
-            ply:PrintMessage(HUD_PRINTTALK, "[zones] Error during saving!!")
+            SurfNotify(ply,"[zones]","Error during saving!")
         end
     end
 end)

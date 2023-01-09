@@ -68,7 +68,6 @@ function LuctusDbSavePlyRecord(ply, newtime, oldtime)
         return
     end
     SurfNotify(ply,"[surf]","You completed the map in a new personal record time!",false,"vo/npc/female01/fantastic01.wav")
-    ply:PrintMessage(HUD_PRINTTALK, "")
     slower_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE time > "..newtime.." AND map = "..sql.SQLStr(game.GetMap()))
     all_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE map = "..sql.SQLStr(game.GetMap()))
     if slower_times_count == false or all_times_count == false then

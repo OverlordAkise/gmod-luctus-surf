@@ -126,8 +126,8 @@ function SurfRtvEnd()
     end
     print("[surf][rtv] Next map:",highestMap)
     if highestMap ~= game.GetMap() then
-        PrintMessage(HUD_PRINTTALK, "[rtv] Next map is "..highestMap.."!")
-        PrintMessage(HUD_PRINTTALK, "[rtv] Changing level in "..LUCTUS_SURF_RTV_MAPCHANGE_DELAY.." seconds!")
+        SurfNotify(nil,"[rtv]","Next map is "..highestMap.."!")
+        SurfNotify(nil,"[rtv]","Changing level in "..LUCTUS_SURF_RTV_MAPCHANGE_DELAY.." seconds!")
         SetGlobal2Int("rtv_autotime",CurTime()+LUCTUS_SURF_RTV_MAPCHANGE_DELAY)
         net.Start("surf_rtvmaps")
             net.WriteBool(true)
@@ -136,7 +136,7 @@ function SurfRtvEnd()
             RunConsoleCommand("changelevel",highestMap)
         end)
     else
-        PrintMessage(HUD_PRINTTALK, "[rtv] The map will be extended by "..(LUCTUS_SURF_RTV_AUTO_TIME/60).."min!")
+        SurfNotify(nil,"[rtv]","The map will be extended by "..(LUCTUS_SURF_RTV_AUTO_TIME/60).."min!")
         timer.Create("surf_rtv_auto_timer",LUCTUS_SURF_RTV_AUTO_TIME,1,function() SurfRtvStart() end)
         SetGlobal2Int("rtv_autotime",CurTime()+LUCTUS_SURF_RTV_AUTO_TIME)
         --CleanUp
@@ -154,19 +154,19 @@ hook.Add("PlayerSay","surf_rtv_chat",function(ply,text,team)
     if text ~= "!rtv" then return end
     local plyAll = player.GetAll()
     if rtv_in_progress then
-        ply:PrintMessage(HUD_PRINTTALK, "[rtv] A vote is already in progress!")
+        SurfNotify(ply,"[rtv]","A vote is already in progress!")
         return
     end
     if not rtv_allowed then
-        ply:PrintMessage(HUD_PRINTTALK, "[rtv] You aren't allowed to vote yet!")
+        SurfNotify(ply,"[rtv]","You aren't allowed to vote yet!")
         return
     end
     if not ply.rtvd then
         ply.rtvd = CurTime()
-        ply:PrintMessage(HUD_PRINTTALK, "[rtv] You rocked the vote!")
+        SurfNotify(ply,"[rtv]","You rocked the vote!")
         SurfRtvCheck()
     else
-        ply:PrintMessage(HUD_PRINTTALK, "[rtv] You already rocked the vote!")
+        SurfNotify(ply,"[rtv]","You already rocked the vote!")
         SurfRtvCheck()
     end
 end)

@@ -26,18 +26,18 @@ surf_admincmds = {
     end,
     ["resethighscore"] = function(ply,args)
         if not args or not string.find(args,"STEAM_%d:%d:%d+") then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !resethighscore <steamid>")
+            SurfNotify(ply,"[admin]","Usage: !resethighscore <steamid>")
             return ""
         end
         LuctusDbResetHighscore(args)
         local target = player.GetBySteamID(args)
         target:SetNWFloat( "record", 0 )
-        PrintMessage(HUD_PRINTTALK, "[admin] High Score of "..args.." successfully deleted!")
+        SurfNotify(ply,"[admin]","High Score of "..args.." successfully deleted!")
     end,
     ["kick"] = function(ply,args)
         local tply, reason = LuctusFindPlyByName(string.lower(args))
         if not tply or not IsValid(tply) then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(ply,"[admin]","Error: "..reason)
             return
         end
         tply:Kick("You have been kicked!")
@@ -45,51 +45,51 @@ surf_admincmds = {
     ["mute"] = function(ply,args)
         local tply, reason = LuctusFindPlyByName(string.lower(args))
         if not tply or not IsValid(tply) then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(ply,"[admin]","Error: "..reason)
             return
         end
         tplytarget.ismuted = true
-        ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is now muted for everyone!")
+        SurfNotify(ply,"[admin]","Player is now muted for everyone!")
     end,
     ["unmute"] = function(ply,args)
         local tply, reason = LuctusFindPlyByName(string.lower(args))
         if not tply or not IsValid(tply) then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(ply,"[admin]","Error: "..reason)
             return
         end
         tplytarget.ismuted = false
-        ply:PrintMessage(HUD_PRINTTALK, "[admin] Player is not muted anymore!")
+        SurfNotify(ply,"[admin]","Player is not muted anymore!")
     end,
     ["banply"] = function(adminPly,args)
         local tply, reason = LuctusFindPlyByName(string.lower(args))
         if not tply or not IsValid(tply) then
-            adminPly:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(adminPly,"[admin]","Error: "..reason)
             return ""
         end
         LuctusDbBanPly(tply,adminPly:SteamID(),adminPly:Nick())
     end,
     ["bansid"] = function(adminPly,args)
         if not args or not string.find(args,"STEAM_%d:%d:%d+") then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !bansid <steamid>")
+            SurfNotify(adminPly,"[admin]","Usage: !bansid <steamid>")
             return ""
         end
         LuctusDbBanSteamid(args)
     end,
     ["unban"] = function(ply,args)
         if not args or not string.find(args,"STEAM_%d:%d:%d+") then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Usage: !unban <steamid>")
+            SurfNotify(ply,"[admin]","Usage: !unban <steamid>")
             return ""
         end
         LuctusDbUnban(args)
     end,
     ["maprestart"] = function()
-        PrintMessage(HUD_PRINTTALK, "[admin] Map will be restarted in 10 seconds!")
+        SurfNotify(nil,"[admin]","Map will be restarted in 10 seconds!")
         timer.Simple(10,function()
             RunConsoleCommand("changelevel", game.GetMap())
         end)
     end,
     ["maplist"] = function(ply,args)
-        ply:PrintMessage(HUD_PRINTTALK, "Check your console!")
+        SurfNotify(ply,"[admin]","Check your console!")
         local maps = file.Find("maps/surf_*.bsp","GAME")
         ply:PrintMessage(HUD_PRINTCONSOLE,"------------")
         ply:PrintMessage(HUD_PRINTCONSOLE,"Maps:")
@@ -100,18 +100,18 @@ surf_admincmds = {
     end,
     ["map"] = function(ply,args)
         if file.Exists("maps/"..args..".bsp","GAME") then
-            PrintMessage(HUD_PRINTTALK, "[admin] Map will be changed to "..args.." in 10 seconds!")
+            SurfNotify(nil,"[admin]","Map will be changed to "..args.." in 10 seconds!")
             timer.Simple(10,function()
                 RunConsoleCommand("changelevel", args)
             end)
         else
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] This map doesn't exist on this server!")
+            SurfNotify(ply,"[admin]","This map doesn't exist on this server!")
         end
     end,
     ["setadmin"] = function(ply,args)
         local wantedPly, reason = LuctusFindPlyByName(args)
         if not IsValid(wantedPly) then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(ply,"[admin]","Error: "..reason)
             return
         end
         wantedPly:SetUserGroup("admin")
@@ -120,7 +120,7 @@ surf_admincmds = {
     ["removeadmin"] = function(ply,args)
         local wantedPly, reason = LuctusFindPlyByName(args)
         if not IsValid(wantedPly) then
-            ply:PrintMessage(HUD_PRINTTALK, "[admin] Error: "..reason)
+            SurfNotify(ply,"[admin]","Error: "..reason)
             return
         end
         wantedPly:SetUserGroup("user")
