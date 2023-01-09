@@ -47,6 +47,7 @@ net.Receive("surf_notify",function()
         chat.AddText(color, tag, color_white, " ", text)
     end
     if CSoundMuted:GetBool() then return end
+    chat.PlaySound()
     if not soundStr or soundStr == "" then return end
     surface.PlaySound(soundStr)
 end)
