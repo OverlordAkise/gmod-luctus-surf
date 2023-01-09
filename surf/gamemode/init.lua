@@ -72,6 +72,7 @@ end
 function GM:PlayerInitialSpawn(ply)
     LuctusDbLoadPlyRecord(ply)
     ply.spectating = false
+    SurfNotify(nil,"[surf]",ply:Nick().." joined the game.")
     timer.Simple(10,function()
         if not IsValid(ply) then return end
         SurfNotify(ply,"[cfg]","You can change your settings with !cfg")
@@ -106,7 +107,12 @@ end
 
 function GM:PlayerAuthed( ply, steamid, uniqueid )
     print("[surf] " .. ply:Name() .. " has been authenticated as " .. steamid .. ". Checking bans...")
+    SurfNotify(nil,"[surf]",ply:Nick().." connected.")
     if LuctusDbIsPlyBanned(steamid) then ply:Kick("You have been banned!") end
+end
+
+function GM:PlayerDisconnected(ply)
+    SurfNotify(nil,"[surf]",ply:Nick().." disconnected.")
 end
 
 print("[luctus_surf] Loaded sv in "..(SysTime()-ss).."s")
