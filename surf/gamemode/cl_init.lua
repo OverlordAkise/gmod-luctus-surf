@@ -8,7 +8,7 @@ include("cl_scoreboard.lua")
 include("cl_rtv.lua")
 include("cl_spectate.lua")
 include("cl_gui.lua")
-
+include("cl_leaderboard.lua")
 
 local CPlayers = CreateClientConVar("ls_showothers", "1", true, false)
 local CChatVolume = CreateClientConVar("ls_chatvolume", "1", true, false)

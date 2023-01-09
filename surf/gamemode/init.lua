@@ -13,6 +13,7 @@ include("sv_rtv.lua")
 include("sv_spectate.lua")
 include("sv_playtime.lua")
 include("sv_chatsounds.lua")
+include("sv_leaderboard.lua")
 
 AddCSLuaFile("sh_hook.lua")
 AddCSLuaFile("shared.lua")
@@ -22,6 +23,7 @@ AddCSLuaFile("cl_scoreboard.lua")
 AddCSLuaFile("cl_rtv.lua")
 AddCSLuaFile("cl_spectate.lua")
 AddCSLuaFile("cl_gui.lua")
+AddCSLuaFile("cl_leaderboard.lua")
 
 function GM:Initialize()
     --im stuff
