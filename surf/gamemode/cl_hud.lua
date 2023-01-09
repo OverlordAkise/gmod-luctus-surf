@@ -68,38 +68,19 @@ end
 
 --THIRDPERSON STUFF
 
-local thirdpersonActive = false
-local thirdpersonRight = false
-
 local cthirdperson = CreateClientConVar("ls_thirdperson", "0", true, false)
 local cthirdpersonright = CreateClientConVar("ls_thirdpersonright", "0", true, false)
 
-cvars.AddChangeCallback("ls_thirdperson", function(cvar, prev, new)
-    if new == "1" then
-        thirdpersonActive = true
-    else
-        thirdpersonActive = false
-    end
-end)
-
-cvars.AddChangeCallback("ls_thirdpersonright", function(cvar, prev, new)
-    if new == "1" then
-        thirdpersonRight = true
-    else
-        thirdpersonRight = false
-    end
-end)
-
 hook.Add("ShouldDrawLocalPlayer", "luctus_surf_thirdperson", function()
-	if thirdpersonActive and LocalPlayer():Alive() then
+	if cthirdperson:GetBool() and LocalPlayer():Alive() then
 		return true
 	end
 end)
 
 hook.Add("CalcView", "luctus_surf_thirdperson", function(ply, pos, angles, fov)
-	if thirdpersonActive and ply:Alive() then
+	if cthirdperson:GetBool() and ply:Alive() then
 		local view = {}
-		view.origin = pos - ( angles:Forward() * 70 ) + ( angles:Right() * (thirdpersonRight and -20 or 20) ) + ( angles:Up() * 5 )
+		view.origin = pos - ( angles:Forward() * 70 ) + ( angles:Right() * (cthirdpersonright:GetBool() and -20 or 20) ) + ( angles:Up() * 5 )
 		--view.origin = pos - ( angles:Forward() * 70 )
 		view.angles = ply:EyeAngles() + Angle( 1, 1, 0 )
 		view.fov = fov
@@ -107,8 +88,6 @@ hook.Add("CalcView", "luctus_surf_thirdperson", function(ply, pos, angles, fov)
 	end
 end)
 
-hook.Add("PlayerBindPress","luctus_surf_tpbind",function(ply, bind, pressed, code)
-    if bind == "headtrack_reset_home_pos" then
-        RunConsoleCommand("ls_thirdperson",(thirdpersonActive and "0" or "1"))
-    end
+hook.Add("OnContextMenuOpen","luctus_surf_tpbind",function(ply, bind, pressed, code)
+    RunConsoleCommand("ls_thirdperson",(cthirdperson:GetBool() and "0" or "1"))
 end)
