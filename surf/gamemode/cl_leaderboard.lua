@@ -63,7 +63,6 @@ net.Receive("surf_leaderboard",function()
         v.time = tonumber(v.time)
     end
     table.SortByMember(timeTab, "time",true)
-    PrintTable(timeTab)
     for k,v in ipairs(timeTab) do
         lb_list:AddLine(v["sid"],v["nick"],string.ToMinutesSecondsMilliseconds(v["time"]),v["date"])
     end
