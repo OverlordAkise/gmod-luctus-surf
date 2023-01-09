@@ -28,12 +28,12 @@ function GM:Initialize()
 end
 
 util.AddNetworkString("surf_notify")
-function SurfNotify(ply,tag,text,isChat,sound)
-    print("[surf][notify]",tag,text,ply)
+function SurfNotify(ply,tag,text,isNotif,sound)
+    print(os.date("%Y-%m-%d %H:%M:%S"),"[surf][notify]",tag,text,ply and ply or "all")
     net.Start("surf_notify")
         net.WriteString(tag)
         net.WriteString(text)
-        net.WriteBool(isChat and true or false)
+        net.WriteBool(isNotif and true or false)
         net.WriteString(sound and sound or "")
     if IsValid(ply) then
         net.Send(ply)
@@ -74,7 +74,7 @@ function GM:PlayerInitialSpawn(ply)
     ply.spectating = false
     timer.Simple(10,function()
         if not IsValid(ply) then return end
-        SurfNotify(ply,"[cfg]","You can change your settings with !cfg",true,"")
+        SurfNotify(ply,"[cfg]","You can change your settings with !cfg")
     end)
 end
 

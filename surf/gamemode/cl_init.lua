@@ -37,9 +37,9 @@ local color_red = Color(255,0,0)
 net.Receive("surf_notify",function()
     local tag = net.ReadString()
     local text = net.ReadString()
-    local isChat = net.ReadBool()
+    local isNotif = net.ReadBool()
     local soundStr = net.ReadString()
-    if not isChat then
+    if isNotif then
         notification.AddLegacy(tag.." "..text, NOTIFY_GENERIC, 5)
     else
         local color = chatcolors[tag]

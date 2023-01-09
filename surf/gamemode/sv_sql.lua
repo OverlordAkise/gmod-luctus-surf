@@ -67,7 +67,7 @@ function LuctusDbSavePlyRecord(ply, newtime, oldtime)
         ErrorNoHaltWithStack(sql.LastError())
         return
     end
-    SurfNotify(ply,"[surf]","You completed the map in a new personal record time!",true,"vo/npc/female01/fantastic01.wav")
+    SurfNotify(ply,"[surf]","You completed the map in a new personal record time!",false,"vo/npc/female01/fantastic01.wav")
     ply:PrintMessage(HUD_PRINTTALK, "")
     slower_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE time > "..newtime.." AND map = "..sql.SQLStr(game.GetMap()))
     all_times_count = sql.QueryValue("SELECT COUNT(*) AS c FROM surf_times WHERE map = "..sql.SQLStr(game.GetMap()))
@@ -76,7 +76,7 @@ function LuctusDbSavePlyRecord(ply, newtime, oldtime)
         ErrorNoHaltWithStack(sql.LastError())
         return
     end
-    SurfNotify(ply,"[surf]","Your time is place "..(1-slower_times_count).."/"..all_times_count.." on this map!",true)
+    SurfNotify(ply,"[surf]","Your time is place "..(1-slower_times_count).."/"..all_times_count.." on this map!")
 end
 
 

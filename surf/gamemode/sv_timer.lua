@@ -22,7 +22,7 @@ function LuctusTimerStart(ply)
     if vel2d > LUCTUS_SURF_MAX_START_VEL then
         ply:SetLocalVelocity(Vector(0, 0, 0))
         SpawnPlyAtStart(ply)
-        SurfNotify(ply,"[surf]","You can't leave the zone with "..math.ceil( vel2d ).." u/s",true,"ambient/alarms/warningbell1.wav")
+        SurfNotify(ply,"[surf]","You can't leave the zone with "..math.ceil( vel2d ).." u/s",false,"ambient/alarms/warningbell1.wav")
     end
     ply:SetNWFloat("starttime",CurTime())
 end
@@ -38,7 +38,7 @@ function LuctusTimerFinish(ply)
     local szMessage = "TimerFinish"
     local nDifference = ply:GetNWFloat( "record", 0 ) > 0 and nTime - ply:GetNWFloat( "record", 0 ) or nil
     local szSlower = nDifference and (" (" .. (nDifference < 0 and "-" or "+") .. string.ToMinutesSecondsMilliseconds( math.abs( nDifference ) ) .. ")") or ""
-    SurfNotify(nil,"[surf]",ply:Nick().." completed the map in "..string.ToMinutesSecondsMilliseconds(nTime).."!",true)
+    SurfNotify(nil,"[surf]",ply:Nick().." completed the map in "..string.ToMinutesSecondsMilliseconds(nTime).."!")
     LuctusDbAddMapPlay()
     if GiveCredit then
         GiveCredit(ply,1)
